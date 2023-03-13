@@ -1,14 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef} from 'react';
 import p5 from 'p5';
 import { getWeather2 } from './WeatherTemp';
 
-function sketch(p) {
+function sketch(p, weatherData) {
   let kMax; // maximal value for the parameter "k" of the blobs
   let step = 0.03; // difference in time between two consecutive blobs
   let n = 80; // total number of blobs
   let radius = 8; // radius of the base circle
   let inter = 0.1; // difference of base radii of two consecutive blobs
   let maxNoise = 300; // maximal value for the parameter "noisiness" for the blobs
+
+  let temp = weatherData;
+  console.log(temp)
+
+  // let temp = 0
 
     // p is a reference to the p5 instance this sketch is attached to
     p.setup = function() {
@@ -27,16 +32,18 @@ function sketch(p) {
       let t = p.frameCount/100;
       let temp = getWeather2();
       for (let i = n; i > 0; i--) {
-        if (temp > 80) {
-          p.fill(253, 94, 83, 9);
-        } else if (temp > 60) {
-          p.fill(255, 153, 0, 9);
-        } else if (temp > 40) {
-          p.fill(0, 128, 128, 9);
-        } else {
-          p.fill(173, 216, 230, 9);
-        }
-        
+        // let alpha = 1 - (i / n);
+        // p.fill((alpha/2 + 0.75)%1, 174, 255, 9);
+          if (temp > 80) {
+            p.fill(253, 94, 83, 9);
+          } else if (temp > 60) {
+            p.fill(255, 153, 0, 9);
+          } else if (temp > 40) {
+            p.fill(0, 128, 128, 9);
+          } else {
+            p.fill(173, 216, 230, 9);
+          }
+
         //fill(255,204,0)
         let size = radius + i * inter;
         let k = kMax * p.sqrt(i/n);
@@ -64,19 +71,19 @@ function sketch(p) {
 
 }
 
-function BlobArt() {
+function BlobArt({weatherData}) {
     // create a reference to the container in which the p5 instance should place the canvas
     const p5ContainerRef = useRef();
 
     useEffect(() => {
-        // On component creation, instantiate a p5 object with the sketch and container reference 
-        const p5Instance = new p5(sketch, p5ContainerRef.current);
+      // On component creation, instantiate a p5 object with the sketch and container reference 
+      const p5Instance = new p5((p) => sketch(p, weatherData), p5ContainerRef.current);
 
-        // On component destruction, delete the p5 instance
-        return () => {
-            p5Instance.remove();
-        }
-    }, []);
+      // On component destruction, delete the p5 instance
+      return () => {
+        p5Instance.remove();
+      };
+    }, [weatherData]);
 
     return (  
       <div className="Art" ref={p5ContainerRef} style={{ width: "100%", height: "100%", justifyContent: 'center', alignItems:'center'}} />
@@ -84,9 +91,3 @@ function BlobArt() {
 }
 
 export default BlobArt;
-
-// style={{
-//   display: 'flex',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-// }}>
