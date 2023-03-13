@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 function WeatherTemp() {
   const [weatherData, getWeatherData] = useState("");
   // const [timeData, getTimeData] = useState("");
@@ -25,7 +24,7 @@ function WeatherTemp() {
   }, []);
 
   return (
-    <div className='Temp'>
+    <div className='Temp' style={{ position: 'absolute'}}>
       <h1>Current temperature: {weatherData}°F</h1>
       {/* <p>Last updated: {timeData}</p> */}
     </div>
