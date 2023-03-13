@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import BlobArt from './BlobArt';
 
 function WeatherTemp() {
   const [weatherData, getWeatherData] = useState("");
@@ -9,7 +10,7 @@ function WeatherTemp() {
 
   const getWeather = async () => {
 
-    axios.get("/weather/40.71/74.00")
+    axios.get("/weather/36.5/-116.93")
     .then((response) => {
       const currentweather = response.data.hourly.temperature_2m[0]
       // const currenttime = response.data.hourly.time[0]
@@ -24,9 +25,10 @@ function WeatherTemp() {
   }, []);
 
   return (
-    <div className='Temp' style={{ position: 'absolute'}}>
+    <div className='Temp' style={
+      { position: 'absolute'}}>
       <h1>Current temperature: {weatherData}°F</h1>
-      {/* <p>Last updated: {timeData}</p> */}
+      <BlobArt weatherData = {weatherData} getWeatherData = {getWeatherData}/>
     </div>
   );
 }
