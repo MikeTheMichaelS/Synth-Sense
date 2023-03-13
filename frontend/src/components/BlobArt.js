@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import p5 from 'p5';
+import { getWeather2 } from './WeatherTemp';
 
 function sketch(p) {
   let kMax; // maximal value for the parameter "k" of the blobs
@@ -24,9 +25,18 @@ function sketch(p) {
     p.draw = function() {
       p.background(360);
       let t = p.frameCount/100;
+      let temp = getWeather2();
       for (let i = n; i > 0; i--) {
-        let alpha = 1 - (i / n);
-        p.fill((alpha/2 + 0.75)%1, 174, 255, 9);
+        if (temp > 80) {
+          p.fill(253, 94, 83, 9);
+        } else if (temp > 60) {
+          p.fill(255, 153, 0, 9);
+        } else if (temp > 40) {
+          p.fill(0, 128, 128, 9);
+        } else {
+          p.fill(173, 216, 230, 9);
+        }
+        
         //fill(255,204,0)
         let size = radius + i * inter;
         let k = kMax * p.sqrt(i/n);

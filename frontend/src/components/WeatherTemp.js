@@ -9,7 +9,7 @@ function WeatherTemp() {
 
   const getWeather = async () => {
 
-    axios.get("/weather/40.71/74.00")
+    axios.get("/weather/42.36/-71.06")
     .then((response) => {
       const currentweather = response.data.hourly.temperature_2m[0]
       // const currenttime = response.data.hourly.time[0]
@@ -30,5 +30,18 @@ function WeatherTemp() {
     </div>
   );
 }
+
+export const getWeather2 = async () => {
+
+  axios.get("/weather/42.36/-71.06")
+  .then((response) => {
+    return response.data.hourly.temperature_2m[0]
+  })
+  .catch(error => console.log(error))
+};
+
+export const test = async () => {
+  return Promise.resolve(50);
+};
 
 export default WeatherTemp;
