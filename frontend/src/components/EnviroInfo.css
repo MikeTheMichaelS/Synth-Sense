@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500&display=swap');
+
+
+.All{
+    height: 100vh;
+    width: 100vh;
+}
+
+.Info{
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 200;
+    font-size: 12px;
+    margin-left: 1.5%;
+    margin-top: 1%;
+}

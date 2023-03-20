@@ -23,6 +23,14 @@ origins = [
 @app.get("/weather/{latitude}/{longitude}")
 
 def get_weather(latitude: float, longitude: float):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m&temperature_unit=fahrenheit"
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={-longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST"
+    response = requests.get(url)
+    return response.json()
+
+
+# gets daylight data from sunrise-sunset api
+@app.get("/daylight/{latitude}/{longitude}")
+def get_daylight(latitude: float, longitude: float):
+    url = f"https://api.sunrise-sunset.org/json?date=today&lat={latitude}&lng={longitude}"
     response = requests.get(url)
     return response.json()
