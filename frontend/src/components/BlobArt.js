@@ -1,16 +1,19 @@
-import { useEffect, useRef} from 'react';
+import { useEffect, useRef, useMemo, useContext} from 'react';
+import {MyContext} from '../App';
 import p5 from 'p5';
 
 function sketch(p, weatherData, decibel) {
   let kMax; // maximal value for the parameter "k" of the blobs
   let step = 0.03; // difference in time between two consecutive blobs
-  let n = 500; // total number of blobs
+  let n = 300; // total number of blobs
   let radius = 4; // radius of the base circle
   let inter = 0.2; // difference of base radii of two consecutive blobs
-  let maxNoise = 300; // maximal value for the parameter "noisiness" for the blobs
-
+  let maxNoise = 200; // maximal value for the parameter "noisiness" for the blobs
+  
   let temp = weatherData;
   console.log(temp)
+
+  console.log("decibel: "+decibel)
 
     // p is a reference to the p5 instance this sketch is attached to
     p.setup = function() {
@@ -79,30 +82,28 @@ function sketch(p, weatherData, decibel) {
 
 }
 
-function BlobArt({weatherData, decibel}) {
-    // create a reference to the container in which the p5 instance should place the canvas
-    const p5ContainerRef = useRef();
+function BlobArt() {
+  const p5ContainerRef = useRef();
 
-    useEffect(() => {
-      // On component creation, instantiate a p5 object with the sketch and container reference 
-      const p5Instance = new p5((p) => sketch(p, weatherData, decibel), p5ContainerRef.current);
+  const {weatherData} = useContext(MyContext)
 
-      // On component destruction, delete the p5 instance
-      return () => {
-        p5Instance.remove();
-      };
-    }, [weatherData,decibel]);
+  console.log("data"+weatherData)
 
-    return (  
-      <div className="Art" ref={p5ContainerRef} style={{ width: "100%", height: "100%", justifyContent: 'center', alignItems:'center'}} />
-    );
+  const memoizedWeatherData = useMemo(() => {
+    return JSON.stringify(weatherData);
+  }, [weatherData]);
+
+  useEffect(() => {
+    const p5Instance = new p5((p) => sketch(p, memoizedWeatherData), p5ContainerRef.current);
+
+    return () => {
+      p5Instance.remove();
+    };
+  }, [memoizedWeatherData]);
+
+  return (
+    <div className="Art" ref={p5ContainerRef} style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }} />
+  );
 }
 
 export default BlobArt;
-
-
-
-
-
-
-

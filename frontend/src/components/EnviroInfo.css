@@ -1,15 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500&display=swap');
 
 
-.All{
-    height: 100vh;
-    width: 100vh;
-}
 
-.Info{
+.All{
     font-family: 'Bai Jamjuree', sans-serif;
-    font-weight: 200;
-    font-size: 12px;
+    position: relative;
+    font-weight: 300;
     margin-left: 1.5%;
     margin-top: 1%;
+
+}
+
+.Info{  
+    position: relative;
+    font-size: 4vh;
+}
+
+.hide{
+    /* font-family: 'Bai Jamjuree', sans-serif; */
+    display: none;
+    /* height: 100vh;
+    width: 100vh; */
+    /* font-weight: 200;
+    font-size: 15px;
+    margin-left: 1.5%; */
+    /* margin-top: 1%; */
+    position: absolute;
+}
+
+.Currtemp:hover {
+    /* display: block; */
+    /* position: relative; */
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+.Sunrise:hover {
+    /* display: block; */
+    cursor: pointer;
+}
+
+.Sunset:hover {
+    /* display: block; */
+    cursor: pointer;
+}
+
+.Info:hover + .hide{
+    display: block;
 }
