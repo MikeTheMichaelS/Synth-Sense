@@ -1,14 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500&display=swap');
 
-
-
 .All{
     font-family: 'Bai Jamjuree', sans-serif;
     position: relative;
     font-weight: 300;
     margin-left: 1.5%;
     margin-top: 1%;
-
 }
 
 .Info{  
@@ -19,33 +16,69 @@
 .hide{
     /* font-family: 'Bai Jamjuree', sans-serif; */
     display: none;
-    /* height: 100vh;
-    width: 100vh; */
-    /* font-weight: 200;
-    font-size: 15px;
-    margin-left: 1.5%; */
-    /* margin-top: 1%; */
     position: absolute;
 }
 
-.Currtemp:hover {
-    /* display: block; */
-    /* position: relative; */
+/* Default Info */
+
+.Info:hover + .hide{
     display: block;
-    position: relative;
+}
+
+/* Hover Classes */
+
+.Currtemp:hover {
     cursor: pointer;
 }
 
 .Sunrise:hover {
-    /* display: block; */
     cursor: pointer;
 }
 
 .Sunset:hover {
-    /* display: block; */
     cursor: pointer;
 }
 
-.Info:hover + .hide{
-    display: block;
+.Decibel:hover {
+    cursor: pointer;
+}
+
+.Latitude:hover {
+    cursor: pointer;
+}
+
+.Longitude:hover {
+    cursor: pointer;
+}
+
+/* Hidden Info */
+
+.Info.hidden:hover + .hide {
+    display: none;
+}
+
+/* Hidden Classes */
+
+.hidden .Currtemp {
+    display: none;
+}
+
+.hidden .Sunrise {
+    display: none;
+}
+
+.hidden .Sunset {
+    display: none;
+}
+
+.hidden .Decibel {
+    display: none;
+}
+
+.hidden .Latitude {
+    display: none;
+}
+
+.hidden .Longitude {
+    display: none;
 }

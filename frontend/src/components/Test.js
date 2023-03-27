@@ -1,8 +1,8 @@
-import { useEffect, useRef, useMemo, useContext } from 'react';
+import { useEffect, useRef, useContext } from 'react';
 import { MyContext } from '../App';
 import p5 from 'p5';
 
-function Sketch(p, weatherData, decibelRef) {
+function Sketch(p, weatherRef, decibelRef) {
   let kMax;
   const step = 0.03;
   const n = 300;
@@ -11,7 +11,7 @@ function Sketch(p, weatherData, decibelRef) {
   const maxNoise = 200;
 
   let size = 0;
-  let temp = weatherData
+  let temp = weatherRef.current
 
   p.setup = function () {
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -27,7 +27,7 @@ function Sketch(p, weatherData, decibelRef) {
     // Smoothly transition between the old and new decibel values
     size += (decibelRef.current - size) * 0.15;
 
-    p.fill(255, 66, 0);
+    temp = weatherRef.current;
 
     for (let i = n; i > 0; i -= 2) {
       const k = kMax * p.sqrt(i / n);
@@ -89,20 +89,26 @@ function Test() {
   const { weatherData, decibel } = useContext(MyContext);
   const decibelRef = useRef(decibel);
 
-  const memoizedWeatherData = useMemo(() => {
-    return JSON.stringify(weatherData);
-  }, [weatherData]);
+//   const memoizedWeatherData = useMemo(() => {
+//     return JSON.stringify(weatherData);
+//   }, [weatherData]);
+
+  const weatherRef = useRef(weatherData);
 
   useEffect(() => {
-    const p5Instance = new p5((p) => Sketch(p, memoizedWeatherData, decibelRef), p5ContainerRef.current);
+    const p5Instance = new p5((p) => Sketch(p, weatherRef, decibelRef), p5ContainerRef.current);
     return () => {
       p5Instance.remove();
     };
-  }, [memoizedWeatherData]);
+  }, []);
 
   useEffect(() => {
     decibelRef.current = decibel;
   }, [decibel]);
+
+  useEffect(() => {
+    weatherRef.current = weatherData;
+  }, [weatherData]);
 
   return (
     <div>
