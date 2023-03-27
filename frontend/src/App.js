@@ -1,6 +1,7 @@
 import DisplayData from './components/DisplayData';
 import BlobArt from './components/BlobArt';
 import React, { useState, useEffect, createContext } from 'react';
+import Test from './components/Test';
 import axios from 'axios';
 
 export const MyContext = createContext();
@@ -110,7 +111,7 @@ function App() {
           }
         };
 
-        const intervalId = setInterval(updateDecibel, 200);
+        const intervalId = setInterval(updateDecibel, 300);
 
         return () => {
           mounted = false;
@@ -125,10 +126,11 @@ function App() {
   }, []);
 
   return (
-    <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel}}>
+    <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude}}>
       <div>
         <DisplayData />
-        <BlobArt />
+        <Test />
+        {/* <BlobArt /> */}
       </div>
     </MyContext.Provider>
   );

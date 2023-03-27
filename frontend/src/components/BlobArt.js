@@ -1,6 +1,8 @@
-import { useEffect, useRef, useMemo, useContext} from 'react';
+import { useEffect, useRef, useMemo, useContext, useState} from 'react';
 import {MyContext} from '../App';
 import p5 from 'p5';
+
+let p5Instance;
 
 function sketch(p, weatherData, decibel) {
   let kMax; // maximal value for the parameter "k" of the blobs
@@ -32,6 +34,7 @@ function sketch(p, weatherData, decibel) {
       let t = p.frameCount/100;
       let start = n % 2 === 0 ? n - 1 : n;
       for (let i = start; i > 0; i -= 2){
+          let size = p.map(decibel, 0, 80, radius, radius + i * inter);
           // if the temperature is above 100, the blob will be red
           if (temp >= 100) {
             p.fill(255,71,61,12)
@@ -50,10 +53,15 @@ function sketch(p, weatherData, decibel) {
             p.fill(66,195,255,12);
           }
 
-        let size = radius + i * inter;
+        // let size = radius + i * inter;
 
         let k = kMax * p.sqrt(i/n);
         let noisiness = maxNoise * (0.8* i / n);
+
+        // for (let i = 1; i <=decibel; i = i+1){
+        //   k = noisiness * (i/2)
+        // }
+        
         blob(size, p.width/2, p.height/2, k, t - i * step, noisiness);
       }      
     }
@@ -79,13 +87,13 @@ function sketch(p, weatherData, decibel) {
         let tempRatio = (temp - starttemp)/tempRange     
       return (p.lerpColor(from,to,tempRatio))
     }
-
 }
+
 
 function BlobArt() {
   const p5ContainerRef = useRef();
 
-  const {weatherData} = useContext(MyContext)
+  const {weatherData, decibel} = useContext(MyContext)
 
   console.log("data"+weatherData)
 
@@ -94,12 +102,12 @@ function BlobArt() {
   }, [weatherData]);
 
   useEffect(() => {
-    const p5Instance = new p5((p) => sketch(p, memoizedWeatherData), p5ContainerRef.current);
+    const p5Instance = new p5((p) => sketch(p, memoizedWeatherData, decibel), p5ContainerRef.current);
 
     return () => {
       p5Instance.remove();
     };
-  }, [memoizedWeatherData]);
+  }, [memoizedWeatherData, decibel]);
 
   return (
     <div className="Art" ref={p5ContainerRef} style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }} />
