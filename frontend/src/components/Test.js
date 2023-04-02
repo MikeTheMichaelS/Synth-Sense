@@ -1,6 +1,7 @@
-import { useEffect, useRef, useContext } from 'react';
-import { MyContext } from '../App';
+import { useEffect, useRef, useContext, useState} from 'react';
+import { MyContext } from './PassingInfo';
 import p5 from 'p5';
+import * as ml5 from "ml5";
 
 function Sketch(p, weatherRef, decibelRef) {
   let kMax;
@@ -9,9 +10,16 @@ function Sketch(p, weatherRef, decibelRef) {
   const radius = 4;
   const inter = 0.2;
   const maxNoise = 200;
+  
 
   let size = 0;
   let temp = weatherRef.current
+
+  let video;
+  let poseNet;
+  let poses = [];
+  let posX = p.width/2
+  let posY = p.height/2
 
   p.setup = function () {
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -19,7 +27,47 @@ function Sketch(p, weatherRef, decibelRef) {
     p.noFill();
     kMax = p.random(0.2, 1.0);
     p.noStroke();
+
+    video = p.createCapture(p.VIDEO);
+    video.size(window.innerWidth, window.innerHeight);
+
+    // Create a new poseNet method with a single detection
+    poseNet = ml5.poseNet(video, ml5.modelReady);
+    // This sets up an event that fills the global variable "poses"
+    // with an array every time new poses are detected
+    poseNet.on('pose', function(results) {
+        poses = results;
+    });
+    // Hide the video element, and just show the canvas
+    video.hide();
   };
+
+  p.modelReady = function() {
+    p.select('#status').html('Model Loaded');
+  };
+    // A function to draw ellipses over the detected keypoints
+    p.drawKeypoints = function() {
+        // Loop through all the poses detected
+        for (let i = 0; i < poses.length; i++) {
+            // For each pose detected, loop through all the keypoints
+            let pose = poses[i].pose;
+            for (let j = 0; j < pose.keypoints.length; j++) {
+                // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+                let keypoint = pose.keypoints[j];
+                // Only draw an ellipse is the pose probability is bigger than 0.2
+                if (keypoint.score > 0.6) {
+                    if (j === 0) { // if this is the nose keypoint
+                        // p.fill(255, 0, 0);
+                        p.noStroke();
+                        posX = p.width - keypoint.position.x
+                        posY = keypoint.position.y
+                        // p.ellipse(posX, posY, 10, 10);
+                    }
+                }
+            }
+        }
+        return [posX,posY];
+    }
 
   p.draw = function () {
     p.background(360);
@@ -28,6 +76,9 @@ function Sketch(p, weatherRef, decibelRef) {
     size += (decibelRef.current - size) * 0.15;
 
     temp = weatherRef.current;
+
+    // this.drawKeypoints();
+    // console.log(this.drawKeypoints()[0]);
 
     for (let i = n; i > 0; i -= 2) {
       const k = kMax * p.sqrt(i / n);
@@ -48,10 +99,12 @@ function Sketch(p, weatherRef, decibelRef) {
       else {
         p.fill(66,195,255,12);
       }
+
+    // console.log(this.keypoints)
       blob(
         blobSize + size,
-        p.width / 2,
-        p.height / 2,
+        this.drawKeypoints()[0],
+        this.drawKeypoints()[1],
         k,
         p.frameCount * step - i * step,
         maxNoise
@@ -88,10 +141,6 @@ function Test() {
   const p5ContainerRef = useRef();
   const { weatherData, decibel } = useContext(MyContext);
   const decibelRef = useRef(decibel);
-
-//   const memoizedWeatherData = useMemo(() => {
-//     return JSON.stringify(weatherData);
-//   }, [weatherData]);
 
   const weatherRef = useRef(weatherData);
 

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import './EnviroInfo.css'
-import { MyContext } from '../App';
+import { MyContext } from './PassingInfo';
 
 function DisplayData() {
 
@@ -33,13 +33,13 @@ function DisplayData() {
             {decibel ? `Decibel Level: ${decibel} dBs` : "Decibel Level: loading..."} 
           </p>
 
-          <p className='Latitude'>
+          {/* <p className='Latitude'>
             {latitude ? `Latitude: ${latitude}` : "Latitude: loading..."}
-          </p>
+          </p> */}
 
-          <p className='Longitude'>
+          {/* <p className='Longitude'>
             {longitude ? `Longitude: ${longitude}` : "Longitude: loading..."}
-          </p>
+          </p> */}
 
         </div> 
 
