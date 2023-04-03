@@ -140,7 +140,7 @@ function PassingInfo() {
 
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude}}>
-      <div className = "circlecontainer">
+      <div>
         <div
             className="circle"
             onMouseEnter={handleHover}
