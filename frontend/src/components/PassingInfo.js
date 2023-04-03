@@ -3,6 +3,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import Test from './Test';
 import axios from 'axios';
 import TestML5 from './TestML5';
+import './PassingInfo.css';
 
 export const MyContext = createContext();
 
@@ -125,10 +126,27 @@ function PassingInfo() {
       });
   }, []);
 
+  //DATA DISPLAY
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleHover = () => {
+    setIsHovering(true);
+  }
+
+  const handleLeave = () => {
+    setIsHovering(false);
+  }
+  
+
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude}}>
       <div>
-        <DisplayData />
+        <div
+            className="circle"
+            onMouseEnter={handleHover}
+            onMouseLeave={handleLeave}
+        />
+        {isHovering && <DisplayData />}
         <Test />
         {/* <BlobArt /> */}
         {/* <TestML5 /> */}
