@@ -1,0 +1,7 @@
+.circle {
+    height: 10vh;
+    width: 10vh;
+    border: 0.25vh solid black;
+    border-radius: 50%;
+    background-color: transparent;
+  }

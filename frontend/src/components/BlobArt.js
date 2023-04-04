@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo, useContext, useState} from 'react';
-import {MyContext} from '../App';
+import {MyContext} from './PassingInfo';
 import p5 from 'p5';
 
 let p5Instance;
@@ -34,7 +34,7 @@ function sketch(p, weatherData, decibel) {
       let t = p.frameCount/100;
       let start = n % 2 === 0 ? n - 1 : n;
       for (let i = start; i > 0; i -= 2){
-          let size = p.map(decibel, 0, 80, radius, radius + i * inter);
+          let size = p.map(decibel, 20, 150, radius, radius + i * inter);
           // if the temperature is above 100, the blob will be red
           if (temp >= 100) {
             p.fill(255,71,61,12)
