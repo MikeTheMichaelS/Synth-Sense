@@ -6,6 +6,11 @@ Dependencies:
 - Axios: 9.3.1
 
 How to run:
-* run "npm install" in ./frontend
-* run "uvicorn main:app --reload" in ./backend
-* run "npm start" in ./frontend
+* Clone the repo
+* Setup dependencies
+    * run "npm install" in ./frontend
+* Start the backend process
+    * run "uvicorn main:app --reload" in ./backend
+* Start the frontend process
+    * run "npm start" in ./frontend
+* Open browser and enter "http://localhost:3000"
