@@ -28,17 +28,21 @@ Synth Sense is a dynamic wall art project that uses real-time data on weather, n
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## Prerequisites
-
-``` 
-git clone 
-```
-How to run:
+## Set up [Local]
 * Clone the repo
-* Setup dependencies
-    * run "npm install" in ./frontend
+``` 
+git clone [HTTPS/SSH link]
+```
+* Install dependencies/packages
+   * run "npm install" in ./frontend terminal
 * Start the backend process
-    * run "uvicorn main:app --reload" in ./backend
+   * open new terminal
+   * run "cd ./backend"
+   * run "uvicorn main:app --reload"
 * Start the frontend process
-    * run "npm start" in ./frontend
-* Open browser and enter "http://localhost:3000"
+   * open new terminal
+   * run "cd ./frontend"
+   * run "npm start"
+
+## Website Access
+* Open browser and enter "https://synth-sense1.web.app/"
