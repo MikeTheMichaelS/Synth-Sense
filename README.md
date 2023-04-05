@@ -2,7 +2,7 @@
 
 Synth Sense is a dynamic wall art project that uses real-time data on weather, noise, and motion to create an interactive and visually striking display. The art reacts to the movements and interactions of people in the space, changing in color and pattern based on their presence and activity. Additionally, Synth Sense incorporates informational text such as the company's logo and real-time weather and time updates to provide useful information to viewers. The art is designed to be displayed in meeting rooms or lobbies of companies, creating an engaging and memorable visual experience for visitors and employees alike.
 
-### Dependencies 
+## Dependencies 
 
 [![Python Version](https://img.shields.io/badge/Python-3.11.3-brightgreen)](https://www.python.org/downloads/)
 [![Uvicorn Version](https://img.shields.io/badge/Uvicorn-0.21.0-brightgreen)](uvicorn.org)
@@ -15,15 +15,24 @@ Synth Sense is a dynamic wall art project that uses real-time data on weather, n
 
 
 
-- Python: v3.11.3
+<!-- - Python: v3.11.3
 - Uvicorn: v0.21.0
 - Node: v18.14.0
 - React: v18.2.0
 - Axios: v1.3.5
 - Fastapi: v0.95.0
 - p5: v1.6.0
-- ml5: v0.12.2 
+- ml5: v0.12.2  -->
 
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+## Prerequisites
+
+``` 
+git clone 
+```
 How to run:
 * Clone the repo
 * Setup dependencies
