@@ -43,12 +43,13 @@ pip install fastapi
 cd frontend && npm install
 ```
 * Start the backend process
-   * open new terminal
+   * In a new terminal
    ```
    cd backend && uvicorn main:app --reload
    ```
 * Start the frontend process
    * In the frontend directory:
+   * Make sure to run the backend process before running the frontend
    ```
    npm start
    ```
