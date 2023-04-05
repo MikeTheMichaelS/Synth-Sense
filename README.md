@@ -54,5 +54,5 @@ cd frontend && npm install
    ```
    * open your local host (localhost:3000)
 
-## Website Access
-* Open browser and enter "https://synth-sense1.web.app/"
+## Deployed Website
+* "https://synth-sense1.web.app/"
