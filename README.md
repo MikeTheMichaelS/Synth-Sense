@@ -33,7 +33,7 @@ These instructions will get you a copy of the project up and running on your loc
 ## Set up [Local]
 * Clone the repo
 ``` 
-git clone [HTTPS/SSH link]
+git clone https://github.com/MikeTheMichaelS/Synth-Sense.git
 ```
 * Install dependencies/packages
     * Make sure to have python and Node installed
