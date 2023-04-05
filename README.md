@@ -1,5 +1,6 @@
 # Synth Sense
 
+![Alt Text](https://drive.google.com/file/d/13ljYOJXup74jepw07djMz0QvUuUu6VLP/view?usp=sharing)
 Synth Sense is a dynamic wall art project that uses real-time data on weather, noise, and motion to create an interactive and visually striking display. The art reacts to the movements and interactions of people in the space, changing in color and pattern based on their presence and activity. Additionally, Synth Sense incorporates informational text such as the company's logo and real-time weather and time updates to provide useful information to viewers. The art is designed to be displayed in meeting rooms or lobbies of companies, creating an engaging and memorable visual experience for visitors and employees alike.
 
 ## Dependencies 
@@ -34,15 +35,23 @@ These instructions will get you a copy of the project up and running on your loc
 git clone [HTTPS/SSH link]
 ```
 * Install dependencies/packages
-   * run "npm install" in ./frontend terminal
+    * Make sure to have python and Node installed
+```
+pip install uvicorn
+pip install fastapi
+cd frontend && npm install
+```
 * Start the backend process
    * open new terminal
-   * run "cd ./backend"
-   * run "uvicorn main:app --reload"
+   ```
+   cd backend && uvicorn main:app --reload
+   ```
 * Start the frontend process
-   * open new terminal
-   * run "cd ./frontend"
-   * run "npm start"
+   * In the frontend directory:
+   ```
+   npm start
+   ```
+   * open your local host (localhost:3000)
 
 ## Website Access
 * Open browser and enter "https://synth-sense1.web.app/"
