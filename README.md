@@ -37,6 +37,7 @@ git clone https://github.com/MikeTheMichaelS/Synth-Sense.git
 ```
 * Install dependencies/packages
     * Make sure to have python and Node installed
+    * from the terminal cd into the same directory where you cloned your repo
 ```
 pip install uvicorn
 pip install fastapi
