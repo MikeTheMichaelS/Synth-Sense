@@ -2,3 +2,9 @@
 *.pyc
 frontend/node_modules
 .DS_Store
+
+#Logs
+logs
+*.log
+npm-debug.log*
+
