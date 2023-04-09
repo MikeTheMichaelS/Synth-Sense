@@ -18,7 +18,8 @@ middleware = [
 
 weather_data = json.loads('{}')
 daylight_data = json.loads('{}')
-weather_time, daylight_time = 0
+weather_time = 0
+daylight_time = 0
 
 
 app = FastAPI(middleware=middleware)
