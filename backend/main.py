@@ -16,7 +16,8 @@ middleware = [
     )
 ]
 
-weather_data, daylight_data = json.loads('{}')
+weather_data = json.loads('{}')
+daylight_data = json.loads('{}')
 weather_time, daylight_time = 0
 
 
