@@ -31,6 +31,10 @@ origins = [
 @app.get("/weather/{latitude}/{longitude}")
 
 def get_weather(latitude: float, longitude: float):
+    if isinstance(weather_time, (int, float)):
+        weather_time = weather_time
+    else:
+        weather_time = 0
     if time.time - weather_time >= 1800:
         # Outdated data, get new one
         print("Outdated data, get new one")
@@ -47,7 +51,12 @@ def get_weather(latitude: float, longitude: float):
 
 # gets daylight data from sunrise-sunset api
 @app.get("/daylight/{latitude}/{longitude}")
+
 def get_daylight(latitude: float, longitude: float):
+    if isinstance(daylight_time, (int, float)):
+        daylight_time = daylight_time
+    else:
+        daylight_time = 0
     if time.time() - daylight_time >= 1800:
         # Outdated data, get new one.
         print("Outdated data, get new one.")
