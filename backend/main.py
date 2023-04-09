@@ -45,7 +45,7 @@ def get_weather(latitude: float, longitude: float):
 # gets daylight data from sunrise-sunset api
 @app.get("/daylight/{latitude}/{longitude}")
 def get_daylight(latitude: float, longitude: float):
-    if time.time() - weather_time >= 1800:
+    if time.time() - daylight_time >= 1800:
         # Outdated data, get new one.
         url = f"https://api.sunrise-sunset.org/json?date=today&lat={latitude}&lng={longitude}"
         daylight_data = requests.get(url).json()
