@@ -1,9 +1,9 @@
 .circle1 {
-    height: 10vh;
-    width: 10vh;
-    border: 0.25vh solid black;
-    border-radius: 50%;
-    background-color: transparent;
+  height: 10vh;
+  width: 10vh;
+  border: 0.25vh solid black;
+  border-radius: 50%;
+  background-color: transparent;
 }
 
 .circle2 {
@@ -16,12 +16,35 @@
   left: 9vw;
 }
 
+.circle3 {
+  height: 10vh;
+  width: 10vh;
+  border: 0.25vh solid black;
+  border-radius: 50%;
+  background-color: transparent;
+  /* margin-left: 8vw; */
+  left: 9vw;
+}
+
+
 .credits {
   font-family: 'Bai Jamjuree', sans-serif;
   position: relative;
   font-weight: 300;
   /* margin-left: 8vw; */
   margin-top: 6%;
+  font-size: 4vh;
+  line-height: 13vh;
+  top: -100%;
+  left: -57%;
+}
+
+.Pseudo {
+  font-family: 'Bai Jamjuree', sans-serif;
+  position: relative;
+  font-weight: 300;
+  /* margin-left: 8vw; */
+  margin-top: 3%;
   font-size: 4vh;
   line-height: 13vh;
   left: 2vw;

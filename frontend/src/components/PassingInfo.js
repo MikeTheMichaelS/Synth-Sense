@@ -15,11 +15,11 @@ function PassingInfo() {
   const [sunset, setSunset] = useState("");
 
   var today = new Date()
-  const time = today.getHours()-1
+  const time = today.getHours() - 1
 
-//   console.log("time" + time)
+  //   console.log("time" + time)
 
-//CURRENT LOCATION
+  //CURRENT LOCATION
   useEffect(() => {
     if (navigator.geolocation) {
       console.log('Getting current position...')
@@ -36,14 +36,14 @@ function PassingInfo() {
     }
   }, []);
 
-//TEMPERATURE
+  //TEMPERATURE
   useEffect(() => {
     if (latitude && longitude) {
       const getWeather = async () => {
-        await axios.get(`/weather/${latitude}/${longitude*-1}`)
+        await axios.get(`/weather/${latitude}/${longitude * -1}`)
           .then((response) => {
             const currentweather = response.data.hourly.temperature_2m
-            console.log("curr"+currentweather[time])
+            console.log("curr" + currentweather[time])
             setWeatherData(currentweather[time])
           })
           .catch(error => console.log(error))
@@ -52,16 +52,16 @@ function PassingInfo() {
     }
   }, [latitude, longitude, time]);
 
-//SUNRISE SUNSET
+  //SUNRISE SUNSET
   useEffect(() => {
     if (latitude && longitude) {
       const getDayLight = async () => {
-        await axios.get(`/daylight/${latitude}/${longitude*-1}`)
+        await axios.get(`/daylight/${latitude}/${longitude * -1}`)
           .then((response) => {
             const sunrise_time_utc = response.data.results.sunrise
             const sunset_time_utc = response.data.results.sunset
 
-            console.log("test: "+ sunrise_time_utc.charAt(0))
+            console.log("test: " + sunrise_time_utc.charAt(0))
             // convert sunrise and sunset times from UTC to Eastern Time
             // const sunrise_time = moment.utc(sunrise_time_utc).tz('America/New_York').format('h:mm A');
             // const sunset_time = moment.utc(sunset_time_utc).tz('America/New_York').format('h:mm A');
@@ -80,7 +80,7 @@ function PassingInfo() {
   const baseURL = 'http://127.0.0.1:8000';
   axios.defaults.baseURL = baseURL;
 
-//   console.log(weatherData)
+  //   console.log(weatherData)
 
   //AUDIO 
   const [decibel, setDecibel] = useState(0);
@@ -129,6 +129,7 @@ function PassingInfo() {
   //DATA DISPLAY
   const [isHoveringCircle1, setIsHoveringCircle1] = useState(false);
   const [isHoveringCircle2, setIsHoveringCircle2] = useState(false);
+  const [isHoveringCircle3, setIsHoveringCircle3] = useState(false);
 
   const handleHoverCircle1 = () => {
     setIsHoveringCircle1(true);
@@ -145,50 +146,73 @@ function PassingInfo() {
   const handleLeaveCircle2 = () => {
     setIsHoveringCircle2(false);
   }
-  
+
+  const handleHoverCircle3 = () => {
+    setIsHoveringCircle3(true);
+  }
+
+  const handleLeaveCircle3 = () => {
+    setIsHoveringCircle3(false);
+  }
+
 
   return (
-    <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude}}>
+    <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude }}>
       <div>
-          {/* Display Data Circle */}
-          <div style={{ position: 'relative', top: '10vh', left: '10vh' }}>
+        {/* Display Data Circle */}
+        <div style={{ position: 'relative', top: '10vh', left: '10vh' }}>
           <div
-              className="circle1"
-              onMouseEnter={handleHoverCircle1}
-              onMouseLeave={handleLeaveCircle1}
-              style={{ position: 'absolute', zIndex: 1 }}
+            className="circle1"
+            onMouseEnter={handleHoverCircle1}
+            onMouseLeave={handleLeaveCircle1}
+            style={{ position: 'absolute', zIndex: 1 }}
           />
-          {isHoveringCircle1 && <DisplayData  style={{ position: 'absolute', zIndex: 2 }}/>}
-          </div>
-          
-          {/* Development Credits */}
-          <div style={{ position: 'relative', top: '30vh', left: '80vw' }}>
+          {isHoveringCircle1 && <DisplayData style={{ position: 'absolute', top: "50%", zIndex: 2 }} />}
+        </div>
+
+        {/* Development Credits */}
+        <div style={{ position: 'relative', top: '30vh', left: '80vw' }}>
           <div
-              className="circle2"
-              onMouseEnter={handleHoverCircle2}
-              onMouseLeave={handleLeaveCircle2}
-              style={{ position: 'absolute', zIndex: 1 }}
+            className="circle2"
+            onMouseEnter={handleHoverCircle2}
+            onMouseLeave={handleLeaveCircle2}
+            style={{ position: 'absolute', zIndex: 1 }}
           />
-          {isHoveringCircle2 && 
-          (
-            <p 
-              className="credits"
+          {isHoveringCircle2 &&
+            (
+              <p
+                className="credits"
+                style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
+                Jack Campbell |
+                Selena Zheng |
+                Mustafa Taibah |
+                Micheal Sun
+              </p>
+            )}
+        </div>
+        <div style={{ position: 'relative', top: '75vh', left: '5vh' }}>
+          <div
+            className="circle3"
+            onMouseEnter={handleHoverCircle3}
+            onMouseLeave={handleLeaveCircle3}
+            style={{ position: 'absolute', zIndex: 1 }}
+          />
+          {isHoveringCircle3 && (
+            <p
+              className="Pseudo"
               style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
-              Jack Campbell<br/>
-              Selena Zheng<br/>
-              Mustafa Taybah<br/>
-              Micheal Sun
+              What do you think we should put here?<br />
             </p>
           )}
-          </div>
-          
-          <Test />
-          {/* <BlobArt /> */}
-          {/* <TestML5 /> */}
+        </div>
+
+        <Test />
+        {/* <BlobArt /> */}
+        {/* <TestML5 /> */}
       </div>
     </MyContext.Provider>
   );
-  
+
 }
 
 export default PassingInfo;

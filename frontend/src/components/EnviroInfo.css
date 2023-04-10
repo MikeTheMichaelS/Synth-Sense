@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500&display=swap');
 
-.All{
+.All {
     font-family: 'Bai Jamjuree', sans-serif;
     position: relative;
     font-weight: 300;
-    margin-top: 2%;
 }
 
-.Info{  
+.Info {
     position: relative;
-    margin-top: 20%;
+    top: 10%;
+    left: 10%;
     font-size: 4vh;
 }
 
-.hide{
+.hide {
     /* font-family: 'Bai Jamjuree', sans-serif; */
     display: none;
     position: absolute;
@@ -21,7 +21,7 @@
 
 /* Default Info */
 
-.Info:hover + .hide{
+.Info:hover+.hide {
     display: block;
 }
 
@@ -53,7 +53,7 @@
 
 /* Hidden Info */
 
-.Info.hidden:hover + .hide {
+.Info.hidden:hover+.hide {
     display: none;
 }
 
