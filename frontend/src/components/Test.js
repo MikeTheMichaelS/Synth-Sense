@@ -68,6 +68,11 @@ function Sketch(p, weatherRef, decibelRef) {
                         positionY = keypoint.position.y
                         // p.ellipse(posX, posY, 10, 10);
                     }
+                    if (j === 10) { // if this is the nose keypoint
+                      p.fill(0, 0, 0);
+                      p.ellipse(p.width-keypoint.position.x, keypoint.position.y, 10, 10);
+                      // p.ellipse(posX, posY, 10, 10);
+                  }
                 }
             }
         }

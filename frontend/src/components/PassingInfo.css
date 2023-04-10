@@ -1,7 +1,7 @@
 .circle1 {
   height: 10vh;
   width: 10vh;
-  border: 0.25vh solid black;
+  border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
 }
@@ -9,7 +9,7 @@
 .circle2 {
   height: 10vh;
   width: 10vh;
-  border: 0.25vh solid black;
+  border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
   /* margin-left: 8vw; */
@@ -19,13 +19,12 @@
 .circle3 {
   height: 10vh;
   width: 10vh;
-  border: 0.25vh solid black;
+  border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
   /* margin-left: 8vw; */
   left: 9vw;
 }
-
 
 .credits {
   font-family: 'Bai Jamjuree', sans-serif;
