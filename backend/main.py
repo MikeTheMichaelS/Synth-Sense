@@ -31,6 +31,7 @@ daylight_time = 0
 
 def get_weather(latitude: float, longitude: float):
     global weather_time  # Define weather_time as a global variable
+    global weather_data  # Define weather_data as a global variable
     if isinstance(weather_time, (int, float)):
         weather_time = weather_time
     else:
@@ -55,6 +56,7 @@ def get_weather(latitude: float, longitude: float):
 @app.get("/daylight/{latitude}/{longitude}")
 def get_daylight(latitude: float, longitude: float):
     global daylight_time  # Define daylight_time as a global variable
+    global daylight_data  # Define daylight_data as a global variable
     if isinstance(daylight_time, (int, float)):
         daylight_time = daylight_time
     else:
