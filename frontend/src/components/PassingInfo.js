@@ -127,29 +127,64 @@ function PassingInfo() {
   }, []);
 
   //DATA DISPLAY
-  const [isHovering, setIsHovering] = useState(false);
+  const [isHoveringCircle1, setIsHoveringCircle1] = useState(false);
+  const [isHoveringCircle2, setIsHoveringCircle2] = useState(false);
 
-  const handleHover = () => {
-    setIsHovering(true);
+  const handleHoverCircle1 = () => {
+    setIsHoveringCircle1(true);
   }
 
-  const handleLeave = () => {
-    setIsHovering(false);
+  const handleLeaveCircle1 = () => {
+    setIsHoveringCircle1(false);
+  }
+
+  const handleHoverCircle2 = () => {
+    setIsHoveringCircle2(true);
+  }
+
+  const handleLeaveCircle2 = () => {
+    setIsHoveringCircle2(false);
   }
   
 
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude}}>
       <div>
-        <div
-            className="circle"
-            onMouseEnter={handleHover}
-            onMouseLeave={handleLeave}
-        />
-        {isHovering && <DisplayData />}
-        <Test />
-        {/* <BlobArt /> */}
-        {/* <TestML5 /> */}
+          {/* Display Data Circle */}
+          <div style={{ position: 'relative', top: '10vh', left: '10vh' }}>
+          <div
+              className="circle1"
+              onMouseEnter={handleHoverCircle1}
+              onMouseLeave={handleLeaveCircle1}
+              style={{ position: 'absolute', zIndex: 1 }}
+          />
+          {isHoveringCircle1 && <DisplayData  style={{ position: 'absolute', zIndex: 2 }}/>}
+          </div>
+          
+          {/* Development Credits */}
+          <div style={{ position: 'relative', top: '30vh', left: '80vw' }}>
+          <div
+              className="circle2"
+              onMouseEnter={handleHoverCircle2}
+              onMouseLeave={handleLeaveCircle2}
+              style={{ position: 'absolute', zIndex: 1 }}
+          />
+          {isHoveringCircle2 && 
+          (
+            <p 
+              className="credits"
+              style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
+              Jack Campbell<br/>
+              Selena Zheng<br/>
+              Mustafa Taybah<br/>
+              Micheal Sun
+            </p>
+          )}
+          </div>
+          
+          <Test />
+          {/* <BlobArt /> */}
+          {/* <TestML5 /> */}
       </div>
     </MyContext.Provider>
   );
