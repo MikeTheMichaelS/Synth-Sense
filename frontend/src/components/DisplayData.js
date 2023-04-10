@@ -4,7 +4,7 @@ import { MyContext } from './PassingInfo';
 
 function DisplayData() {
 
-  const {weatherData, sunrise, sunset, decibel, latitude, longitude} = useContext(MyContext)
+  const { weatherData, sunrise, sunset, decibel, latitude, longitude } = useContext(MyContext)
 
   const [hidden, setHidden] = useState(false);
 
@@ -13,40 +13,40 @@ function DisplayData() {
   }
 
   return (
-      <div className='All' style={{position: 'absolute'}}>
-        
-        <div className={`Info ${hidden ? 'hidden' : ''}`} onClick={handleClick}>
+    <div className='All' style={{ position: 'absolute' }}>
 
-          <p className='Currtemp'>
-            {weatherData ? `Current temperature: ${weatherData}°F` : "Current temperature: loading..."}
-          </p>
+      <div className={`Info ${hidden ? 'hidden' : ''}`} onClick={handleClick}>
 
-          <p className='Sunrise'>
-            {sunrise ? `Sunrise: ${sunrise} UTC` : "Sunrise: loading..."}
-          </p>
+        <p className='Currtemp'>
+          {weatherData ? `Current temperature: ${weatherData}°F` : "Current temperature: loading..."} | {sunrise ? `Sunrise: ${sunrise} UTC` : "Sunrise: loading..."}  | {sunset ? `Sunset: ${sunset} UTC` : "Sunset: loading..."} | {decibel ? `Decibel Level: ${decibel} dBs` : "Decibel Level: loading..."}
+        </p>
 
-          <p className='Sunset'>
-            {sunset ? `Sunset: ${sunset} UTC` : "Sunset: loading..."}
-          </p>
+        <p className='Sunrise'>
 
-          <p className='Decibel'>
-            {decibel ? `Decibel Level: ${decibel} dBs` : "Decibel Level: loading..."} 
-          </p>
+        </p>
 
-          {/* <p className='Latitude'>
+        <p className='Sunset'>
+
+        </p>
+
+        <p className='Decibel'>
+
+        </p>
+
+        {/* <p className='Latitude'>
             {latitude ? `Latitude: ${latitude}` : "Latitude: loading..."}
           </p> */}
 
-          {/* <p className='Longitude'>
+        {/* <p className='Longitude'>
             {longitude ? `Longitude: ${longitude}` : "Longitude: loading..."}
           </p> */}
 
-        </div> 
-
-        <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div>
-        
       </div>
-  ); 
+
+      <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div>
+
+    </div>
+  );
 }
 
 export default DisplayData;
