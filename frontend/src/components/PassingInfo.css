@@ -2,7 +2,7 @@
 .circle1 {
   height: 10vh;
   width: 10vh;
-  border: 0.25vh solid rgb(255, 219, 219);
+  border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
   transition: background-color 0.5s ease;
@@ -33,17 +33,17 @@
 
 /* hover circle css */
 .circle1:hover {
-  background-color: rgb(255, 219, 219);
+  background-color: rgb(253, 231, 231);
   box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
 }
 
 .circle2:hover {
-  background-color: rgb(255, 219, 219);
+  background-color: rgb(253, 231, 231);
   box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
 }
 
 .circle3:hover {
-  background-color: rgb(255, 219, 219);
+  background-color: rgb(253, 231, 231);
   box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
 }
 
