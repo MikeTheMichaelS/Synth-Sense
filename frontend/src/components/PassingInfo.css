@@ -1,9 +1,12 @@
+/* default circle css */
 .circle1 {
   height: 10vh;
   width: 10vh;
-  border: 0.25vh solid rgb(253, 231, 231);
+  border: 0.25vh solid rgb(255, 219, 219);
   border-radius: 50%;
   background-color: transparent;
+  transition: background-color 0.5s ease;
+  cursor: pointer;
 }
 
 .circle2 {
@@ -12,7 +15,8 @@
   border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
-  /* margin-left: 8vw; */
+  transition: background-color 0.5s ease;
+  cursor: pointer;
   left: 9vw;
 }
 
@@ -22,9 +26,30 @@
   border: 0.25vh solid rgb(253, 231, 231);
   border-radius: 50%;
   background-color: transparent;
-  /* margin-left: 8vw; */
+  transition: background-color 0.5s ease;
+  cursor: pointer;
   left: 9vw;
 }
+
+/* hover circle css */
+.circle1:hover {
+  background-color: rgb(255, 219, 219);
+  box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
+}
+
+.circle2:hover {
+  background-color: rgb(255, 219, 219);
+  box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
+}
+
+.circle3:hover {
+  background-color: rgb(255, 219, 219);
+  box-shadow: 0 0.5vh 1vh rgba(0, 0, 0, 0.2);
+}
+
+/* ignore */
+/* active circle css */
+/* ignore */
 
 .credits {
   font-family: 'Bai Jamjuree', sans-serif;

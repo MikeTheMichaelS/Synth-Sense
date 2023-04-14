@@ -127,33 +127,70 @@ function PassingInfo() {
   }, []);
 
   //DATA DISPLAY
-  const [isHoveringCircle1, setIsHoveringCircle1] = useState(false);
-  const [isHoveringCircle2, setIsHoveringCircle2] = useState(false);
-  const [isHoveringCircle3, setIsHoveringCircle3] = useState(false);
+  const [isCircle1Active, setIsCircle1Active] = useState(false);
+  const [isCircle2Active, setIsCircle2Active] = useState(false);
+  const [isCircle3Active, setIsCircle3Active] = useState(false);
 
+  // circle hover
   const handleHoverCircle1 = () => {
-    setIsHoveringCircle1(true);
-  }
+    if (isCircle1Active) {
+      setIsCircle1Active(false);
+    } else {
+      setIsCircle1Active(true);
+    }
 
-  const handleLeaveCircle1 = () => {
-    setIsHoveringCircle1(false);
+    if (isCircle2Active) {
+      setIsCircle2Active(false);
+    }
+
+    if (isCircle3Active) {
+      setIsCircle3Active(false);
+    }
   }
 
   const handleHoverCircle2 = () => {
-    setIsHoveringCircle2(true);
-  }
+    if (isCircle2Active) {
+      setIsCircle2Active(false);
+    } else {
+      setIsCircle2Active(true);
+    }
 
-  const handleLeaveCircle2 = () => {
-    setIsHoveringCircle2(false);
+    if (isCircle1Active) {
+      setIsCircle1Active(false);
+    }
+
+    if (isCircle3Active) {
+      setIsCircle3Active(false);
+    }
   }
 
   const handleHoverCircle3 = () => {
-    setIsHoveringCircle3(true);
+        if (isCircle3Active) {
+      setIsCircle3Active(false);
+    } else {
+      setIsCircle3Active(true);
+    }
+
+    if (isCircle1Active) {
+      setIsCircle1Active(false);
+    }
+
+    if (isCircle2Active) {
+      setIsCircle2Active(false);
+    }
   }
 
-  const handleLeaveCircle3 = () => {
-    setIsHoveringCircle3(false);
-  }
+  // const handleLeaveCircle2 = () => {
+  //   setIsHoveringCircle2(false);
+  // }
+
+  // const handleHoverCircle3 = () => {
+  //   setIsHoveringCircle3(true);
+  // }
+
+  // const handleLeaveCircle3 = () => {
+  //   setIsHoveringCircle3(false);
+  // }
 
 
   return (
@@ -164,10 +201,10 @@ function PassingInfo() {
           <div
             className="circle1"
             onMouseEnter={handleHoverCircle1}
-            onMouseLeave={handleLeaveCircle1}
+            // onMouseLeave={handleLeaveCircle1}
             style={{ position: 'absolute'}}
           />
-          {isHoveringCircle1 && <DisplayData/> }
+          {isCircle1Active && <DisplayData/> }
         </div>
 
         {/* Development Credits */}
@@ -175,10 +212,10 @@ function PassingInfo() {
           <div
             className="circle2"
             onMouseEnter={handleHoverCircle2}
-            onMouseLeave={handleLeaveCircle2}
+            // onMouseLeave={handleLeaveCircle2}
             style={{ position: 'absolute' }}
           />
-          {isHoveringCircle2 && (
+          {isCircle2Active && (
             <p
               className="credits"
               style={{
@@ -202,10 +239,10 @@ function PassingInfo() {
           <div
             className="circle3"
             onMouseEnter={handleHoverCircle3}
-            onMouseLeave={handleLeaveCircle3}
+            // onMouseLeave={handleLeaveCircle3}
             style={{ position: 'absolute', zIndex: 1 }}
           />
-          {isHoveringCircle3 && (
+          {isCircle3Active && (
             <p
               className="Pseudo"
               style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
