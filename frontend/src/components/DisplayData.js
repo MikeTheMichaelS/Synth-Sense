@@ -13,7 +13,7 @@ function DisplayData() {
   }
 
   return (
-    <div className='All' style={{ position: 'absolute' }}>
+    <div className='All' style={{ position: 'fixed' }}>
 
       <div className={`Info ${hidden ? 'hidden' : ''}`} onClick={handleClick}>
 
@@ -43,7 +43,7 @@ function DisplayData() {
 
       </div>
 
-      <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div>
+      {/* <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div> */}
 
     </div>
   );

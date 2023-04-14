@@ -165,9 +165,9 @@ function PassingInfo() {
             className="circle1"
             onMouseEnter={handleHoverCircle1}
             onMouseLeave={handleLeaveCircle1}
-            style={{ position: 'absolute', zIndex: 1 }}
+            style={{ position: 'absolute'}}
           />
-          {isHoveringCircle1 && <DisplayData style={{ position: 'absolute', top: "50%", zIndex: 2 }} />}
+          {isHoveringCircle1 && <DisplayData/> }
         </div>
 
         {/* Development Credits */}
@@ -176,20 +176,28 @@ function PassingInfo() {
             className="circle2"
             onMouseEnter={handleHoverCircle2}
             onMouseLeave={handleLeaveCircle2}
-            style={{ position: 'absolute', zIndex: 1 }}
+            style={{ position: 'absolute' }}
           />
-          {isHoveringCircle2 &&
-            (
-              <p
-                className="credits"
-                style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
-                Jack Campbell |
-                Selena Zheng |
-                Mustafa Taibah |
-                Micheal Sun
-              </p>
-            )}
-        </div>
+          {isHoveringCircle2 && (
+            <p
+              className="credits"
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                margin: 0,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Jack Campbell | Selena Zheng | Mustafa Taibah | Micheal Sun
+            </p>
+          )}
+      </div>
+
+
+        
+        {/* Third Circle */}
         <div style={{ position: 'relative', top: '75vh', left: '5vh' }}>
           <div
             className="circle3"

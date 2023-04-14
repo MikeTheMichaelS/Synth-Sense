@@ -2,15 +2,18 @@
 
 .All {
     font-family: 'Bai Jamjuree', sans-serif;
-    position: relative;
+    position: fixed;
     font-weight: 300;
 }
 
 .Info {
-    position: relative;
-    top: 10%;
-    left: 10%;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 4vh;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .hide {
