@@ -17,11 +17,18 @@ function Sketch(p, weatherRef, decibelRef) {
 
   let video;
   let poseNet;
+  // let handpose;
   let poses = [];
+  // let predictions = [];
   let posX = p.width/2
   let posY = p.height/2
   let prevPosX = p.width / 2;
   let prevPosY = p.height / 2;
+
+  let wristTrail = []; // Array to store wrist positions for ellipse trail
+  let maxTrailLength = 40; // Maximum number of wrist positions to store
+  let ellipseSize = 10; // Size of ellipses in the trail
+  let trailColor1, trailColor2; // Colors for ellipse trail
 
   p.setup = function () {
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -32,7 +39,6 @@ function Sketch(p, weatherRef, decibelRef) {
 
     video = p.createCapture(p.VIDEO);
     video.size(window.innerWidth, window.innerHeight);
-
     // Create a new poseNet method with a single detection
     poseNet = ml5.poseNet(video, ml5.modelReady, {maxPose: 1 });
     // This sets up an event that fills the global variable "poses"
@@ -41,7 +47,9 @@ function Sketch(p, weatherRef, decibelRef) {
         poses = results;
     });
 
-    // Hide the video element, and just show the canvas
+    trailColor1 = p.color(255, 255, 255); // Start color (black)
+    trailColor2 = p.color(0, 0, 0); // End color (white)
+
     video.hide();
   };
 
@@ -52,32 +60,43 @@ function Sketch(p, weatherRef, decibelRef) {
     p.drawKeypoints = function() {
       let positionX = p.width/2
       let positionY = p.height/2
-        // Loop through all the poses detected
-        for (let i = 0; i < poses.length; i++) {
-            // For each pose detected, loop through all the keypoints
-            let pose = poses[i].pose;
-            for (let j = 0; j < pose.keypoints.length; j++) {
-                // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-                let keypoint = pose.keypoints[j];
-                // Only draw an ellipse is the pose probability is bigger than 0.2
-                if (keypoint.score > 0.6) {
-                    if (j === 0) { // if this is the nose keypoint
-                        // p.fill(255, 0, 0);
-                        p.noStroke();
-                        positionX = p.width - keypoint.position.x
-                        positionY = keypoint.position.y
-                        // p.ellipse(posX, posY, 10, 10);
-                    }
-                    if (j === 10) { // if this is the nose keypoint
-                      p.fill(0, 0, 0);
-                      p.ellipse(p.width-keypoint.position.x, keypoint.position.y, 10, 10);
-                      // p.ellipse(posX, posY, 10, 10);
-                  }
-                }
-            }
-        }
-        return [positionX,positionY];
+      let wristPositionX = p.width/2
+      let wristPositionY = p.height/2
+    // Loop through all the poses detected
+    for (let i = 0; i < poses.length; i++) {
+      // For each pose detected, loop through all the keypoints
+      let pose = poses[i].pose;
+      // Get the nose keypoint
+      let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
+      // Only draw an ellipse if the nose keypoint is detected with a score greater than 0.6
+      if (noseKeypoint && noseKeypoint.score > 0.6) {
+        // Update the positionX and positionY with the nose keypoint's position
+        positionX = p.width - noseKeypoint.position.x;
+        positionY = noseKeypoint.position.y;
+      }
+      let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
+      if (wristKeypoint.score > 0.6) {
+        wristPositionX = p.width - wristKeypoint.position.x
+        wristPositionY =  wristKeypoint.position.y
+        // p.fill(0, 0, 0);
+        // p.ellipse(wristPositionX, wristPositionY, 10, 10);
+        wristTrail.push(p.createVector(wristPositionX, wristPositionY));
+      }
+      // Limit wristTrail array to maximum length
+      if (wristTrail.length > maxTrailLength) {
+        wristTrail.shift(); // Remove oldest position
+      // Draw gradient trail
+      for (let i = 0; i < wristTrail.length; i++) {
+        let currentPos = wristTrail[i];
+        let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
+        p.fill(gradientColor);
+        p.noStroke();
+        p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
+      }
+  }
     }
+    return [positionX, positionY];
+  }
 
   p.draw = function () {
     p.background(360);
