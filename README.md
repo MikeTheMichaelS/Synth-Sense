@@ -6,9 +6,6 @@ Synth Sense is a dynamic wall art project that uses real-time data on weather, n
 
 ## Dependencies 
 
-[![Python Version](https://img.shields.io/badge/Python-3.11.3-brightgreen)](https://www.python.org/downloads/)
-[![Uvicorn Version](https://img.shields.io/badge/Uvicorn-0.21.0-brightgreen)](uvicorn.org)
-[![FastAPI Version](https://img.shields.io/badge/Fast-0.95.0-brightgreen)](https://fastapi.tiangolo.com/)
 [![Node Version](https://img.shields.io/badge/Node-18.14.0-brightgreen)](https://nodejs.org/en)
 [![React Version](https://img.shields.io/badge/React-18.2.0-brightgreen)](https://react.dev/)
 [![Axios Version](https://img.shields.io/badge/Axios-1.3.5-brightgreen)](https://www.npmjs.com/package/react-axios)
