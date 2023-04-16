@@ -40,7 +40,7 @@ function PassingInfo() {
   useEffect(() => {
     if (latitude && longitude) {
       const getWeather = async () => {
-        await axios.get(`/weather/${latitude}/${longitude * -1}`)
+        await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST`)
           .then((response) => {
             const currentweather = response.data.hourly.temperature_2m
             console.log("curr" + currentweather[time])
@@ -56,7 +56,7 @@ function PassingInfo() {
   useEffect(() => {
     if (latitude && longitude) {
       const getDayLight = async () => {
-        await axios.get(`/daylight/${latitude}/${longitude * -1}`)
+        await axios.get(`https://api.sunrise-sunset.org/json?date=today&lat=${latitude}&lng=${longitude}`)
           .then((response) => {
             const sunrise_time_utc = response.data.results.sunrise
             const sunset_time_utc = response.data.results.sunset
@@ -77,8 +77,6 @@ function PassingInfo() {
     }
   }, [latitude, longitude]);
 
-  const baseURL = 'http://127.0.0.1:8000';
-  axios.defaults.baseURL = baseURL;
 
   //   console.log(weatherData)
 
