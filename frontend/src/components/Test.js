@@ -11,10 +11,10 @@ function Sketch(p, weatherRef, decibelRef) {
   const inter = 0.2;
   const maxNoise = 200;
   
-
   let size = 0;
   let temp = weatherRef.current
 
+  // poseNet variables
   let video;
   let poseNet;
   // let handpose;
@@ -22,8 +22,27 @@ function Sketch(p, weatherRef, decibelRef) {
   // let predictions = [];
   let posX = p.width/2
   let posY = p.height/2
-  let prevPosX = p.width / 2;
-  let prevPosY = p.height / 2;
+  let prevPosX = p.width/2;
+  let prevPosY = p.height/2;
+  
+  // sqrt cache
+  let p_sqrt = [];
+  for (let i = n; i > 0; i -= 2) {
+    p_sqrt.push(p.sqrt(i / n));
+  }
+
+  // ignore:: cos and sin cache
+  // let p_cos = [];
+  // let p_sin = [];
+  // for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
+  //   p_cos.push(p.cos(theta)); 
+  //   p_sin.push(p.sin(theta));
+  // }
+
+  // colors
+  let yellow  = p.color(255, 168, 61, 12); //yellow
+  let red = p.color(255,71,61,12); //red
+  let blue = p.color(66,195,255,12); //blue
 
   let wristTrail = []; // Array to store wrist positions for ellipse trail
   let maxTrailLength = 40; // Maximum number of wrist positions to store
@@ -56,12 +75,13 @@ function Sketch(p, weatherRef, decibelRef) {
   p.modelReady = function() {
     p.select('#status').html('Model Loaded');
   };
-    // A function to draw ellipses over the detected keypoints
-    p.drawKeypoints = function() {
-      let positionX = p.width/2
-      let positionY = p.height/2
-      let wristPositionX = p.width/2
-      let wristPositionY = p.height/2
+
+  // A function to draw ellipses over the detected keypoints
+  p.drawKeypoints = function() {
+    let positionX = p.width/2
+    let positionY = p.height/2
+    let wristPositionX = p.width/2
+    let wristPositionY = p.height/2
     // Loop through all the poses detected
     for (let i = 0; i < poses.length; i++) {
       // For each pose detected, loop through all the keypoints
@@ -71,13 +91,11 @@ function Sketch(p, weatherRef, decibelRef) {
       // Only draw an ellipse if the nose keypoint is detected with a score greater than 0.6
       if (noseKeypoint && noseKeypoint.score > 0.6) {
         // Update the positionX and positionY with the nose keypoint's position
-        positionX = p.width - noseKeypoint.position.x;
-        positionY = noseKeypoint.position.y;
+        [positionX,positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
       }
       let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
       if (wristKeypoint.score > 0.6) {
-        wristPositionX = p.width - wristKeypoint.position.x
-        wristPositionY =  wristKeypoint.position.y
+        [wristPositionX,wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
         // p.fill(0, 0, 0);
         // p.ellipse(wristPositionX, wristPositionY, 10, 10);
         wristTrail.push(p.createVector(wristPositionX, wristPositionY));
@@ -85,15 +103,15 @@ function Sketch(p, weatherRef, decibelRef) {
       // Limit wristTrail array to maximum length
       if (wristTrail.length > maxTrailLength) {
         wristTrail.shift(); // Remove oldest position
-      // Draw gradient trail
-      for (let i = 0; i < wristTrail.length; i++) {
-        let currentPos = wristTrail[i];
-        let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
-        p.fill(gradientColor);
-        p.noStroke();
-        p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
+        // Draw gradient trail
+        for (let i = 0; i < wristTrail.length; i++) {
+          let currentPos = wristTrail[i];
+          let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
+          p.fill(gradientColor);
+          p.noStroke();
+          p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
+        }
       }
-  }
     }
     return [positionX, positionY];
   }
@@ -103,41 +121,34 @@ function Sketch(p, weatherRef, decibelRef) {
 
     // Smoothly transition between the old and new decibel values
     size += (decibelRef.current - size) * 0.15;
-
     temp = weatherRef.current;
 
     const keypoints = this.drawKeypoints();
 
     if (video) {
-      posX = keypoints[0];
-      posY = keypoints[1];
+      [posX, posY] = [keypoints[0], keypoints[1]];
     }
-    prevPosX = posX;
-    prevPosY = posY;
+    
+    [prevPosX, prevPosY] = [posX, posY];
 
     for (let i = n; i > 0; i -= 2) {
-      const k = kMax * p.sqrt(i / n);
+      const k = kMax * p_sqrt[p_sqrt.length - ((300-i) / 2+1)];
       const blobSize = radius + i * inter;
       let fillColor;
       if (temp >= 100) {
-        fillColor = p.color(255,71,61,12);
+        fillColor = red
       } 
       else if (temp < 100 && temp >= 50) {
-        let lowerbound = p.color(255, 168, 61, 12); //yellow
-        let upperbound = p.color(255,71,61,12); //red
-        fillColor = lerpBlobColor(lowerbound,upperbound,100, 50);
+        fillColor = lerpBlobColor(yellow,red,100,50);
       } 
       else if (temp < 50 && temp >= 0) { 
-        let upperbound = p.color(255, 168, 61, 12); //yellow
-        let lowerbound = p.color(66,195,255,12); //blue
-        fillColor = lerpBlobColor(lowerbound,upperbound,50, 0);
+        fillColor = lerpBlobColor(blue,yellow,50,0);
       } 
       else {
-        fillColor = p.color(66,195,255,12);
+        fillColor = blue
       }
       p.fill(fillColor);
 
-    // console.log(this.keypoints)
       blob(
         blobSize + size,
         posX,
@@ -151,22 +162,23 @@ function Sketch(p, weatherRef, decibelRef) {
 
   function blob(size, xCenter, yCenter, k, t, noisiness) {
     p.beginShape();
-
-    const angleStep = 360 / 10;
-    for (let theta = 0; theta <= 360 + 2 * angleStep; theta += angleStep) {
-      const cosTheta = p.cos(theta);
-      const sinTheta = p.sin(theta);
-      let r1, r2;
-      r1 = cosTheta + 8;
-      r2 = sinTheta + 8;
-      const r =
-        size +
-        p.noise(k * r1, k * r2, t) *
-          noisiness;
-      const x = xCenter + r * cosTheta;
-      const y = yCenter + r * sinTheta;
-      posX = p.lerp(prevPosX, x, 0.2);
-      posY = p.lerp(prevPosY, y, 0.2);
+    let cosTheta;
+    let sinTheta;
+    let x, y;
+    let r, r1, r2;
+    let index = 0;
+    
+    for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
+      // ignore:: [cosTheta, sinTheta] = [p_cos[index % p_cos.length], p_sin[index % p_sin.length]];
+      // ignore:: index++;
+      [cosTheta, sinTheta] = [p.cos(theta), p.sin(theta)];
+      [r1, r2] = [cosTheta + 8, sinTheta + 8];
+  
+      r = size + p.noise(k * r1, k * r2, t) * noisiness;
+  
+      [x, y] = [xCenter + r * cosTheta, yCenter + r * sinTheta];
+      [posX, posY] = [p.lerp(prevPosX, x, 0.2), p.lerp(prevPosY, y, 0.2)];
+  
       p.curveVertex(x, y);
     }
     p.endShape();
@@ -174,20 +186,20 @@ function Sketch(p, weatherRef, decibelRef) {
 
   function lerpBlobColor(from,to,endtemp,starttemp){
     let tempRange = endtemp-starttemp
-    let tempRatio = (temp - starttemp)/tempRange     
-  return (p.lerpColor(from,to,tempRatio))
-}
+    let tempRatio = (temp - starttemp)/(tempRange)     
+    return (p.lerpColor(from,to,tempRatio))
+  }
 }
 
 function Test() {
   const p5ContainerRef = useRef();
   const { weatherData, decibel } = useContext(MyContext);
   const decibelRef = useRef(decibel);
-
   const weatherRef = useRef(weatherData);
 
   useEffect(() => {
-    const p5Instance = new p5((p) => Sketch(p, weatherRef, decibelRef), p5ContainerRef.current);
+    const p5Instance = new p5((p) => 
+      Sketch(p, weatherRef, decibelRef), p5ContainerRef.current);
     return () => {
       p5Instance.remove();
     };

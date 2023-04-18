@@ -17,8 +17,6 @@ function PassingInfo() {
   var today = new Date()
   const time = today.getHours() - 1
 
-  //   console.log("time" + time)
-
   //CURRENT LOCATION
   useEffect(() => {
     if (navigator.geolocation) {
@@ -177,19 +175,6 @@ function PassingInfo() {
       setIsCircle2Active(false);
     }
   }
-
-  // const handleLeaveCircle2 = () => {
-  //   setIsHoveringCircle2(false);
-  // }
-
-  // const handleHoverCircle3 = () => {
-  //   setIsHoveringCircle3(true);
-  // }
-
-  // const handleLeaveCircle3 = () => {
-  //   setIsHoveringCircle3(false);
-  // }
-
 
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude }}>

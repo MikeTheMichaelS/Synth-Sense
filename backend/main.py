@@ -67,7 +67,7 @@ def get_daylight(latitude: float, longitude: float):
         url = f"https://api.sunrise-sunset.org/json?date=today&lat={latitude}&lng={longitude}"
         daylight_data = requests.get(url).json()
         daylight_time = time.time()
-        print("New daylight data got")
+        print("New daylight data received.")
         return daylight_data
     else:
         # Old data still valid, using cache
