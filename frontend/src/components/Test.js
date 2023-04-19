@@ -31,13 +31,14 @@ function Sketch(p, weatherRef, decibelRef) {
     p_sqrt.push(p.sqrt(i / n));
   }
 
-  // ignore:: cos and sin cache
-  // let p_cos = [];
-  // let p_sin = [];
-  // for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
-  //   p_cos.push(p.cos(theta)); 
-  //   p_sin.push(p.sin(theta));
-  // }
+  // cos and sin cache
+  let p_cos = [];
+  let p_sin = [];
+  for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
+    const radians = p.radians(theta);
+    p_cos.push(p.cos(radians)); 
+    p_sin.push(p.sin(radians));
+  }
 
   // colors
   let yellow  = p.color(255, 168, 61, 12); //yellow
@@ -78,10 +79,9 @@ function Sketch(p, weatherRef, decibelRef) {
 
   // A function to draw ellipses over the detected keypoints
   p.drawKeypoints = function() {
-    let positionX = p.width/2
-    let positionY = p.height/2
-    let wristPositionX = p.width/2
-    let wristPositionY = p.height/2
+    let [positionX, positionY] = [p.width/2, p.height/2]
+    let [wristPositionX, wristPositionY] = [p.width/2, p.height/2]
+    
     // Loop through all the poses detected
     for (let i = 0; i < poses.length; i++) {
       // For each pose detected, loop through all the keypoints
@@ -91,11 +91,11 @@ function Sketch(p, weatherRef, decibelRef) {
       // Only draw an ellipse if the nose keypoint is detected with a score greater than 0.6
       if (noseKeypoint && noseKeypoint.score > 0.6) {
         // Update the positionX and positionY with the nose keypoint's position
-        [positionX,positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
+        [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
       }
       let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
       if (wristKeypoint.score > 0.6) {
-        [wristPositionX,wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
+        [wristPositionX, wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
         // p.fill(0, 0, 0);
         // p.ellipse(wristPositionX, wristPositionY, 10, 10);
         wristTrail.push(p.createVector(wristPositionX, wristPositionY));
@@ -139,10 +139,10 @@ function Sketch(p, weatherRef, decibelRef) {
         fillColor = red
       } 
       else if (temp < 100 && temp >= 50) {
-        fillColor = lerpBlobColor(yellow,red,100,50);
+        fillColor = lerpBlobColor(yellow, red, 100, 50);
       } 
       else if (temp < 50 && temp >= 0) { 
-        fillColor = lerpBlobColor(blue,yellow,50,0);
+        fillColor = lerpBlobColor(blue, yellow, 50, 0);
       } 
       else {
         fillColor = blue
@@ -166,12 +166,9 @@ function Sketch(p, weatherRef, decibelRef) {
     let sinTheta;
     let x, y;
     let r, r1, r2;
-    let index = 0;
     
-    for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
-      // ignore:: [cosTheta, sinTheta] = [p_cos[index % p_cos.length], p_sin[index % p_sin.length]];
-      // ignore:: index++;
-      [cosTheta, sinTheta] = [p.cos(theta), p.sin(theta)];
+    for (let i = 0; i < p_cos.length; i++) {
+      [cosTheta, sinTheta] = [p_cos[i], p_sin[i]];
       [r1, r2] = [cosTheta + 8, sinTheta + 8];
   
       r = size + p.noise(k * r1, k * r2, t) * noisiness;
@@ -184,7 +181,7 @@ function Sketch(p, weatherRef, decibelRef) {
     p.endShape();
   }
 
-  function lerpBlobColor(from,to,endtemp,starttemp){
+  function lerpBlobColor(from, to, endtemp, starttemp){
     let tempRange = endtemp-starttemp
     let tempRatio = (temp - starttemp)/(tempRange)     
     return (p.lerpColor(from,to,tempRatio))
