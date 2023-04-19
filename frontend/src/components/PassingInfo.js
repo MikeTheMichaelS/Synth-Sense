@@ -14,8 +14,12 @@ function PassingInfo() {
   const [sunrise, setSunrise] = useState("");
   const [sunset, setSunset] = useState("");
 
-  var today = new Date()
-  const time = today.getHours() - 1
+  var today = new Date();
+  const time = today.getHours() - 1;
+  let tempUpdateTime;
+  let sunUpdateTime;
+  let tempData, sunriseData, sunsetData;
+
 
   //CURRENT LOCATION
   useEffect(() => {
@@ -36,15 +40,24 @@ function PassingInfo() {
 
   //TEMPERATURE
   useEffect(() => {
-    if (latitude && longitude) {
-      const getWeather = async () => {
-        await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST`)
-          .then((response) => {
-            const currentweather = response.data.hourly.temperature_2m
-            console.log("curr" + currentweather[time])
-            setWeatherData(currentweather[time])
-          })
-          .catch(error => console.log(error))
+    if (tempUpdateTime == null) {
+      if (latitude && longitude) {
+        const getWeather = async () => {
+          await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST`)
+            .then((response) => {
+              const currentweather = response.data.hourly.temperature_2m
+              tempData = response.data.hourly.temperature_2m
+              console.log("curr" + currentweather[time])
+              setWeatherData(currentweather[time])
+            })
+            .catch(error => console.log(error))
+        };
+        getWeather();
+      }
+    } else {
+      const getWeather = ()=>{
+        console.log("Cached weather data accessed.");
+        setWeatherData(tempData[time]);
       };
       getWeather();
     }
@@ -52,25 +65,35 @@ function PassingInfo() {
 
   //SUNRISE SUNSET
   useEffect(() => {
-    if (latitude && longitude) {
-      const getDayLight = async () => {
-        await axios.get(`https://api.sunrise-sunset.org/json?date=today&lat=${latitude}&lng=${longitude}`)
-          .then((response) => {
-            const sunrise_time_utc = response.data.results.sunrise
-            const sunset_time_utc = response.data.results.sunset
-
-            console.log("test: " + sunrise_time_utc.charAt(0))
-            // convert sunrise and sunset times from UTC to Eastern Time
-            // const sunrise_time = moment.utc(sunrise_time_utc).tz('America/New_York').format('h:mm A');
-            // const sunset_time = moment.utc(sunset_time_utc).tz('America/New_York').format('h:mm A');
-            // setting the state of the sunrise and sunset
-            // const newsunrise = (parseInt(sunrise_time_utc.charAt(0))+5).toString() + sunrise_time_utc.substring(1)
-            // const newsunset = (parseInt(sunset_time_utc.charAt(0))+5).toString() + sunset_time_utc.substring(1)
-            setSunrise(sunrise_time_utc)
-            setSunset(sunset_time_utc)
-          })
-          .catch(error => console.log(error))
-      };
+    if (sunUpdateTime == null) {
+      if (latitude && longitude) {
+        const getDayLight = async () => {
+          await axios.get(`https://api.sunrise-sunset.org/json?date=today&lat=${latitude}&lng=${longitude}`)
+            .then((response) => {
+              const sunrise_time_utc = response.data.results.sunrise;
+              const sunset_time_utc = response.data.results.sunset;
+              sunriseData = response.data.results.sunrise;
+              sunsetData = response.data.results.sunset;
+              console.log("test: " + sunrise_time_utc.charAt(0))
+              // convert sunrise and sunset times from UTC to Eastern Time
+              // const sunrise_time = moment.utc(sunrise_time_utc).tz('America/New_York').format('h:mm A');
+              // const sunset_time = moment.utc(sunset_time_utc).tz('America/New_York').format('h:mm A');
+              // setting the state of the sunrise and sunset
+              // const newsunrise = (parseInt(sunrise_time_utc.charAt(0))+5).toString() + sunrise_time_utc.substring(1)
+              // const newsunset = (parseInt(sunset_time_utc.charAt(0))+5).toString() + sunset_time_utc.substring(1)
+              setSunrise(sunrise_time_utc)
+              setSunset(sunset_time_utc)
+            })
+            .catch(error => console.log(error))
+        };
+        getDayLight();
+      }
+    } else {
+      const getDayLight = ()=>{
+        console.log("Cached daylight data accessed.");
+        setSunrise(sunriseData);
+        setSunset(sunsetData);
+      }
       getDayLight();
     }
   }, [latitude, longitude]);
