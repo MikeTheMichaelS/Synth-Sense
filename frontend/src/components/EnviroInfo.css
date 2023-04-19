@@ -1,14 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@200;300;400;500&display=swap');
 
-.All {
+
+
+/* .All {
     font-family: 'Bai Jamjuree', sans-serif;
-    position: fixed;
+    position: absolute;
     font-weight: 300;
-}
+    top: auto;
+    left: auto;
+} */
+
+/* .circleWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+} */
 
 .Info {
+    width: 1380px;
+    height: 97.5px;
+    font-family: 'Bai Jamjuree', sans-serif;
+    font-weight: 300;
     position: fixed;
-    top: 0;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 4vh;

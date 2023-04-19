@@ -13,39 +13,36 @@ function DisplayData() {
   }
 
   return (
-    <div className='All' style={{ position: 'fixed' }}>
 
-      <div className={`Info ${hidden ? 'hidden' : ''}`} onClick={handleClick}>
+    <div className={`Info ${hidden ? 'hidden' : ''}`} onClick={handleClick}>
 
-        <p className='Currtemp'>
-          {weatherData ? `Current temperature: ${weatherData}°F` : "Current temperature: loading..."} | {sunrise ? `Sunrise: ${sunrise} UTC` : "Sunrise: loading..."}  | {sunset ? `Sunset: ${sunset} UTC` : "Sunset: loading..."} | {decibel ? `Decibel Level: ${decibel} dBs` : "Decibel Level: loading..."}
-        </p>
+      <p className='Currtemp'>
+        {weatherData ? `Current temperature: ${weatherData}°F` : "Current temperature: loading..."} | {sunrise ? `Sunrise: ${sunrise} UTC` : "Sunrise: loading..."}  | {sunset ? `Sunset: ${sunset} UTC` : "Sunset: loading..."} | {decibel ? `Decibel Level: ${decibel} dBs` : "Decibel Level: loading..."}
+      </p>
 
-        <p className='Sunrise'>
+      <p className='Sunrise'>
 
-        </p>
+      </p>
 
-        <p className='Sunset'>
+      <p className='Sunset'>
 
-        </p>
+      </p>
 
-        <p className='Decibel'>
+      <p className='Decibel'>
 
-        </p>
+      </p>
 
-        {/* <p className='Latitude'>
+      {/* <p className='Latitude'>
             {latitude ? `Latitude: ${latitude}` : "Latitude: loading..."}
           </p> */}
 
-        {/* <p className='Longitude'>
+      {/* <p className='Longitude'>
             {longitude ? `Longitude: ${longitude}` : "Longitude: loading..."}
           </p> */}
 
-      </div>
-
-      {/* <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div> */}
-
     </div>
+
+    /* <div className={`hide ${hidden ? 'hidden' : ''}`} onClick={handleClick}>click to hide</div> */
   );
 }
 

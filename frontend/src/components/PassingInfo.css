@@ -49,18 +49,14 @@
 
 .credits {
   font-family: 'Bai Jamjuree', sans-serif;
-  position: relative;
   font-weight: 300;
   font-size: 4vh;
+  align-items: center;
+
 }
 
 .Pseudo {
   font-family: 'Bai Jamjuree', sans-serif;
-  position: relative;
   font-weight: 300;
-  /* margin-left: 8vw; */
-  margin-top: 3%;
   font-size: 4vh;
-  line-height: 13vh;
-  left: 2vw;
 }

@@ -161,7 +161,7 @@ function PassingInfo() {
   }
 
   const handleHoverCircle3 = () => {
-        if (isCircle3Active) {
+    if (isCircle3Active) {
       setIsCircle3Active(false);
     } else {
       setIsCircle3Active(true);
@@ -180,14 +180,14 @@ function PassingInfo() {
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude }}>
       <div>
         {/* Display Data Circle */}
-        <div style={{ position: 'relative', top: '10vh', left: '10vh' }}>
+        <div style={{ position: 'relative', top: '15vh', left: '10vh' }}>
           <div
             className="circle1"
             onMouseEnter={handleHoverCircle1}
             // onMouseLeave={handleLeaveCircle1}
-            style={{ position: 'absolute'}}
+            style={{ position: 'absolute' }}
           />
-          {isCircle1Active && <DisplayData/> }
+          {isCircle1Active && <DisplayData />}
         </div>
 
         {/* Development Credits */}
@@ -202,8 +202,12 @@ function PassingInfo() {
             <p
               className="credits"
               style={{
+                fontFamily: 'Bai Jamjuree',
+                fontWeight: '300',
+                height: '97.5px',
+                widht: '1380px',
                 position: 'fixed',
-                top: 0,
+                top: '30px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 margin: 0,
@@ -213,10 +217,10 @@ function PassingInfo() {
               Jack Campbell | Selena Zheng | Mustafa Taibah | Micheal Sun
             </p>
           )}
-      </div>
+        </div>
 
 
-        
+
         {/* Third Circle */}
         <div style={{ position: 'relative', top: '75vh', left: '5vh' }}>
           <div
@@ -228,7 +232,18 @@ function PassingInfo() {
           {isCircle3Active && (
             <p
               className="Pseudo"
-              style={{ position: 'absolute', zIndex: 2, display: 'flex', flexDirection: 'column' }}>
+              style={{
+                fontFamily: 'Bai Jamjuree',
+                fontWeight: '300',
+                height: '97.5px',
+                widht: '1380px',
+                position: 'fixed',
+                top: '30px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                margin: 0,
+                whiteSpace: 'nowrap',
+              }}>
               What do you think we should put here?<br />
             </p>
           )}
@@ -238,7 +253,7 @@ function PassingInfo() {
         {/* <BlobArt /> */}
         {/* <TestML5 /> */}
       </div>
-    </MyContext.Provider>
+    </MyContext.Provider >
   );
 
 }
