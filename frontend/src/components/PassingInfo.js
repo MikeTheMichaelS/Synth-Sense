@@ -8,12 +8,17 @@ import './PassingInfo.css';
 export const MyContext = createContext();
 
 function PassingInfo() {
+  // React State Area
   const [weatherData, setWeatherData] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [sunrise, setSunrise] = useState("");
   const [sunset, setSunset] = useState("");
 
+  // Config area
+  let cacheTTL = 1800000
+
+  // Cache variable area
   var today = new Date();
   const time = today.getHours() - 1;
   let tempUpdateTime;
@@ -40,13 +45,14 @@ function PassingInfo() {
 
   //TEMPERATURE
   useEffect(() => {
-    if (tempUpdateTime == null) {
+    if (tempUpdateTime == null || Date.now() - sunUpdateTime > cacheTTL) {
       if (latitude && longitude) {
         const getWeather = async () => {
           await axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST`)
             .then((response) => {
               const currentweather = response.data.hourly.temperature_2m
               tempData = response.data.hourly.temperature_2m
+              tempUpdateTime = Date.now();
               console.log("curr" + currentweather[time])
               setWeatherData(currentweather[time])
             })
@@ -65,7 +71,7 @@ function PassingInfo() {
 
   //SUNRISE SUNSET
   useEffect(() => {
-    if (sunUpdateTime == null) {
+    if (sunUpdateTime == null || Date.now() - sunUpdateTime > cacheTTL) {
       if (latitude && longitude) {
         const getDayLight = async () => {
           await axios.get(`https://api.sunrise-sunset.org/json?date=today&lat=${latitude}&lng=${longitude}`)
@@ -74,6 +80,7 @@ function PassingInfo() {
               const sunset_time_utc = response.data.results.sunset;
               sunriseData = response.data.results.sunrise;
               sunsetData = response.data.results.sunset;
+              sunUpdateTime = Date.now()
               console.log("test: " + sunrise_time_utc.charAt(0))
               // convert sunrise and sunset times from UTC to Eastern Time
               // const sunrise_time = moment.utc(sunrise_time_utc).tz('America/New_York').format('h:mm A');
