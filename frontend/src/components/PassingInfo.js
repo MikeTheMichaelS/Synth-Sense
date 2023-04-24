@@ -3,7 +3,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import Test from './Test';
 import axios from 'axios';
 import TestML5 from './TestML5';
-import './PassingInfo.css';
+// import './PassingInfo.css';
 
 export const MyContext = createContext();
 
@@ -20,7 +20,7 @@ function PassingInfo() {
 
   // Cache variable area
   var today = new Date();
-  const time = today.getHours() - 1;
+  const time = today.getHours() ;
   let tempUpdateTime;
   let sunUpdateTime;
   let tempData, sunriseData, sunsetData;
@@ -152,65 +152,65 @@ function PassingInfo() {
       });
   }, []);
 
-  //DATA DISPLAY
-  const [isCircle1Active, setIsCircle1Active] = useState(false);
-  const [isCircle2Active, setIsCircle2Active] = useState(false);
-  const [isCircle3Active, setIsCircle3Active] = useState(false);
+  // //DATA DISPLAY
+  // const [isCircle1Active, setIsCircle1Active] = useState(false);
+  // const [isCircle2Active, setIsCircle2Active] = useState(false);
+  // const [isCircle3Active, setIsCircle3Active] = useState(false);
 
-  // circle hover
-  const handleHoverCircle1 = () => {
-    if (isCircle1Active) {
-      setIsCircle1Active(false);
-    } else {
-      setIsCircle1Active(true);
-    }
+  // // circle hover
+  // const handleHoverCircle1 = () => {
+  //   if (isCircle1Active) {
+  //     setIsCircle1Active(false);
+  //   } else {
+  //     setIsCircle1Active(true);
+  //   }
 
-    if (isCircle2Active) {
-      setIsCircle2Active(false);
-    }
+  //   if (isCircle2Active) {
+  //     setIsCircle2Active(false);
+  //   }
 
-    if (isCircle3Active) {
-      setIsCircle3Active(false);
-    }
-  }
+  //   if (isCircle3Active) {
+  //     setIsCircle3Active(false);
+  //   }
+  // }
 
-  const handleHoverCircle2 = () => {
-    if (isCircle2Active) {
-      setIsCircle2Active(false);
-    } else {
-      setIsCircle2Active(true);
-    }
+  // const handleHoverCircle2 = () => {
+  //   if (isCircle2Active) {
+  //     setIsCircle2Active(false);
+  //   } else {
+  //     setIsCircle2Active(true);
+  //   }
 
-    if (isCircle1Active) {
-      setIsCircle1Active(false);
-    }
+  //   if (isCircle1Active) {
+  //     setIsCircle1Active(false);
+  //   }
 
-    if (isCircle3Active) {
-      setIsCircle3Active(false);
-    }
-  }
+  //   if (isCircle3Active) {
+  //     setIsCircle3Active(false);
+  //   }
+  // }
 
-  const handleHoverCircle3 = () => {
-    if (isCircle3Active) {
-      setIsCircle3Active(false);
-    } else {
-      setIsCircle3Active(true);
-    }
+  // const handleHoverCircle3 = () => {
+  //   if (isCircle3Active) {
+  //     setIsCircle3Active(false);
+  //   } else {
+  //     setIsCircle3Active(true);
+  //   }
 
-    if (isCircle1Active) {
-      setIsCircle1Active(false);
-    }
+  //   if (isCircle1Active) {
+  //     setIsCircle1Active(false);
+  //   }
 
-    if (isCircle2Active) {
-      setIsCircle2Active(false);
-    }
-  }
+  //   if (isCircle2Active) {
+  //     setIsCircle2Active(false);
+  //   }
+  // }
 
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude }}>
       <div>
         {/* Display Data Circle */}
-        <div style={{ position: 'relative', top: '15vh', left: '10vh' }}>
+        {/* <div style={{ position: 'relative', top: '15vh', left: '10vh' }}>
           <div
             className="circle1"
             onMouseEnter={handleHoverCircle1}
@@ -218,10 +218,10 @@ function PassingInfo() {
             style={{ position: 'absolute' }}
           />
           {isCircle1Active && <DisplayData />}
-        </div>
+        </div> */}
 
         {/* Development Credits */}
-        <div style={{ position: 'relative', top: '30vh', left: '80vw' }}>
+        {/* <div style={{ position: 'relative', top: '30vh', left: '80vw' }}>
           <div
             className="circle2"
             onMouseEnter={handleHoverCircle2}
@@ -247,12 +247,12 @@ function PassingInfo() {
               Jack Campbell | Selena Zheng | Mustafa Taibah | Micheal Sun
             </p>
           )}
-        </div>
+        </div> */}
 
 
 
         {/* Third Circle */}
-        <div style={{ position: 'relative', top: '75vh', left: '5vh' }}>
+        {/* <div style={{ position: 'relative', top: '75vh', left: '5vh' }}>
           <div
             className="circle3"
             onMouseEnter={handleHoverCircle3}
@@ -277,7 +277,7 @@ function PassingInfo() {
               What do you think we should put here?<br />
             </p>
           )}
-        </div>
+        </div> */}
 
         <Test />
         {/* <BlobArt /> */}

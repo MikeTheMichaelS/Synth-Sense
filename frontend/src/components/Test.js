@@ -2,17 +2,20 @@ import { useEffect, useRef, useContext} from 'react';
 import { MyContext } from './PassingInfo';
 import p5 from 'p5';
 import * as ml5 from "ml5";
+import './FontStuff.css';
 
-function Sketch(p, weatherRef, decibelRef) {
+function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let kMax;
   const step = 0.03;
-  const n = 300;
+  const n = 200;
   const radius = 4;
   const inter = 0.2;
   const maxNoise = 200;
   
   let size = 0;
   let temp = weatherRef.current
+  let sunrise = sunriseRef.current
+  let sunset = sunsetRef.current
 
   // poseNet variables
   let video;
@@ -22,8 +25,12 @@ function Sketch(p, weatherRef, decibelRef) {
   // let predictions = [];
   let posX = p.width/2
   let posY = p.height/2
+  let wposX 
+  let wposY 
   let prevPosX = p.width/2;
   let prevPosY = p.height/2;
+
+  let currcolor;
   
   // sqrt cache
   let p_sqrt = [];
@@ -42,13 +49,17 @@ function Sketch(p, weatherRef, decibelRef) {
 
   // colors
   let yellow  = p.color(255, 168, 61, 12); //yellow
-  let red = p.color(255,71,61,12); //red
-  let blue = p.color(66,195,255,12); //blue
+  let red = p.color(255, 71, 61, 12); //red
+  let blue = p.color(66, 195, 255, 12); //blue
 
   let wristTrail = []; // Array to store wrist positions for ellipse trail
   let maxTrailLength = 40; // Maximum number of wrist positions to store
   let ellipseSize = 10; // Size of ellipses in the trail
   let trailColor1, trailColor2; // Colors for ellipse trail
+
+  let circleFill = 'none';
+  let circleFill2 = 'none';
+  let circleFill3 = 'none';
 
   p.setup = function () {
     p.createCanvas(window.innerWidth, window.innerHeight);
@@ -66,9 +77,10 @@ function Sketch(p, weatherRef, decibelRef) {
     poseNet.on('pose', function(results) {
         poses = results;
     });
-
-    trailColor1 = p.color(255, 255, 255); // Start color (black)
-    trailColor2 = p.color(0, 0, 0); // End color (white)
+    
+    p.textAlign(p.CENTER, p.TOP);
+    p.textSize(0.025 * p.width);
+    p.textFont('BaiJamjuree');
 
     video.hide();
   };
@@ -94,11 +106,14 @@ function Sketch(p, weatherRef, decibelRef) {
         [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
       }
       let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
-      if (wristKeypoint.score > 0.6) {
+      if (wristKeypoint.score > 0.4) {
         [wristPositionX, wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
-        // p.fill(0, 0, 0);
-        // p.ellipse(wristPositionX, wristPositionY, 10, 10);
         wristTrail.push(p.createVector(wristPositionX, wristPositionY));
+        // Move the mouse cursor to the wrist position
+        // let mouseXPos = p.map(wristPositionX, 0, p.width, 0, p.windowWidth);
+        // let mouseYPos = p.map(wristPositionY, 0, p.height, 0, p.windowHeight);
+        // p.mouseX = mouseXPos;
+        // p.mouseY = mouseYPos;
       }
       // Limit wristTrail array to maximum length
       if (wristTrail.length > maxTrailLength) {
@@ -113,7 +128,7 @@ function Sketch(p, weatherRef, decibelRef) {
         }
       }
     }
-    return [positionX, positionY];
+    return [positionX, positionY, wristPositionX, wristPositionY];
   }
 
   p.draw = function () {
@@ -127,14 +142,16 @@ function Sketch(p, weatherRef, decibelRef) {
 
     if (video) {
       [posX, posY] = [keypoints[0], keypoints[1]];
+      [wposX, wposY] = [keypoints[2], keypoints[3]];
     }
     
     [prevPosX, prevPosY] = [posX, posY];
 
     for (let i = n; i > 0; i -= 2) {
+      p.noStroke();
       const k = kMax * p_sqrt[p_sqrt.length - ((300-i) / 2+1)];
       const blobSize = radius + i * inter;
-      let fillColor;
+      let fillColor
       if (temp >= 100) {
         fillColor = red
       } 
@@ -147,7 +164,6 @@ function Sketch(p, weatherRef, decibelRef) {
       else {
         fillColor = blue
       }
-      p.fill(fillColor);
 
       blob(
         blobSize + size,
@@ -155,12 +171,127 @@ function Sketch(p, weatherRef, decibelRef) {
         posY,
         k,
         p.frameCount * step - i * step,
-        maxNoise
+        maxNoise,
+        fillColor
       );
+
+      currcolor = fillColor
     }
+
+    currcolor.setAlpha(150);
+
+    trailColor1 = p.color(255, 255, 255); // Start color (black)
+    trailColor2 = currcolor; // End color (white)
+
+    const currentDate = new Date(); // get current date and time
+    
+    const currentEDT = currentDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+
+    drawellipses(currcolor, wposX, wposY, p.width, p.height);
+    p.fill(circleFill);
+    p.strokeWeight(1);
+    p.stroke(currcolor);
+    p.circle(p.width*0.83, p.height*0.3, p.width*0.05);
+
+    p.fill(circleFill2);
+    p.strokeWeight(1);
+    p.stroke(currcolor);
+    p.circle(p.width*0.2, p.height*0.4, p.width*0.05);
+
+    p.fill(circleFill3);
+    p.strokeWeight(1);
+    p.stroke(currcolor);
+    p.circle(p.width*0.7, p.height*0.7, p.width*0.05);
+
+    p.fill('black');
+    p.text(`${currentEDT}`,  p.width*.915, p.height*.91)
+    // p.textSize(0.03 * p.width);
   };
 
-  function blob(size, xCenter, yCenter, k, t, noisiness) {
+  function drawellipses(color, xpoint, ypoint, sw, sh){
+    let circle1 = p.createVector(sw*0.83, sh*0.3);
+    let distance = p.dist(xpoint, ypoint, circle1.x, circle1.y);
+    let circle2 = p.createVector(sw*0.2, sh*0.4);
+    let distance2 = p.dist(xpoint, ypoint, circle2.x, circle2.y);
+    let circle3 = p.createVector(sw*0.7, sh*0.7);
+    let distance3 = p.dist(xpoint, ypoint, circle3.x, circle3.y);
+
+    const currentDate = new Date(); // get current date and time
+    const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
+    const sunsetDate = new Date(`${currentDate.toLocaleDateString()} ${sunsetRef.current} UTC`); 
+    
+    // const currentEDT = currentDate.toLocaleString('en-US', {
+    //   timeZone: 'America/New_York',
+    //   hour12: true,
+    //   hour: 'numeric',
+    //   minute: 'numeric',
+    //   second: 'numeric'
+    // });
+    const sunriseEDT = sunriseDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+    const sunsetEDT = sunsetDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+
+    const clear = p.color(255, 0, 0, 0);
+    if (distance <= sw*0.05) {
+      circleFill = color;
+      circleFill2 = clear
+      circleFill3 = clear
+      p.fill('black');
+      // p.text("Hello World!", p.width/2, 10);
+      p.text(
+        `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` + " | " +
+        `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` + " | " +
+        `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
+        p.width / 2, 10
+      );
+      console.log(sunrise, temp, sunset)
+    } else {
+      circleFill = clear
+    }
+    
+    if (distance2 <= sw*0.05) {
+      circleFill2 = color;
+      circleFill = clear
+      circleFill3 = clear
+      p.fill('black');
+      // p.text("Hello World!", p.width/2, 10);
+      p.text("Jack Campbell | Selena Zheng | Mustafa Taibah | Michael Sun" , p.width/2, 10);
+    } else {
+      circleFill2 = clear
+    }
+    
+    if (distance3 <= sw*0.05) {
+      circleFill2 = clear  
+      circleFill3 = color;
+      circleFill = clear
+      p.fill('black');
+      // p.text("Hello World!", p.width/2, 10);
+      p.text(decibelRef.current ? `Decibel: ${decibelRef.current} dBs` : "Decibel: loading..." , p.width/2, 10);
+    } else {
+      circleFill3 = clear
+    }
+    
+  }
+
+  function blob(size, xCenter, yCenter, k, t, noisiness, color) {
+    p.fill(color);
     p.beginShape();
     let cosTheta;
     let sinTheta;
@@ -190,13 +321,16 @@ function Sketch(p, weatherRef, decibelRef) {
 
 function Test() {
   const p5ContainerRef = useRef();
-  const { weatherData, decibel } = useContext(MyContext);
+  const { weatherData, decibel, sunrise, sunset } = useContext(MyContext);
   const decibelRef = useRef(decibel);
   const weatherRef = useRef(weatherData);
+  const sunriseRef = useRef(sunrise);
+  const sunsetRef = useRef(sunrise);
+
 
   useEffect(() => {
     const p5Instance = new p5((p) => 
-      Sketch(p, weatherRef, decibelRef), p5ContainerRef.current);
+      Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef), p5ContainerRef.current);
     return () => {
       p5Instance.remove();
     };
@@ -209,6 +343,15 @@ function Test() {
   useEffect(() => {
     weatherRef.current = weatherData;
   }, [weatherData]);
+
+  useEffect(() => {
+    sunriseRef.current = sunrise;
+    console.log("useEffect" + sunrise)
+  }, [sunrise]);
+
+  useEffect(() => {
+    sunsetRef.current = sunset;
+  }, [sunset]);
 
   return (
     <div>
