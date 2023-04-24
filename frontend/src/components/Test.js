@@ -49,8 +49,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
   // colors
   let yellow  = p.color(255, 168, 61, 12); //yellow
-  let red = p.color(255,71,61,12); //red
-  let blue = p.color(66,195,255,12); //blue
+  let red = p.color(255, 71, 61, 12); //red
+  let blue = p.color(66, 195, 255, 12); //blue
 
   let wristTrail = []; // Array to store wrist positions for ellipse trail
   let maxTrailLength = 40; // Maximum number of wrist positions to store
@@ -208,6 +208,42 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     let circle3 = p.createVector(sw*0.7, sh*0.7);
     let distance3 = p.dist(xpoint, ypoint, circle3.x, circle3.y);
 
+    const currentDate = new Date(); // get current date and time
+    const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
+    const sunsetDate = new Date(`${currentDate.toLocaleDateString()} ${sunsetRef.current} UTC`); 
+    
+    const currentEDT = currentDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+    const sunriseEDT = sunriseDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+    const sunsetEDT = sunsetDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+
+    // WILL REMOVE LATER
+    p.fill("black");
+    p.text(
+      `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` + " | " +
+      `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` + " | " +
+      `${currentEDT ? `Current Time: ${currentEDT}` : "Current Time: loading..."} ` + " | " +
+      `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
+      p.width / 2, 10
+    );
+
     const clear = p.color(255, 0, 0, 0);
     if (distance <= sw*0.05) {
       circleFill = color;
@@ -215,7 +251,14 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       circleFill3 = clear
       p.fill('black');
       // p.text("Hello World!", p.width/2, 10);
-      p.text(temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..." , p.width/2, 10);
+      p.text(
+        `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` + " | " +
+        `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` + " | " +
+        `${currentEDT ? `Current Time: ${currentEDT}` : "Current Time: loading..."} ` + " | " +
+        `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
+        p.width / 2, 10
+      );
+      console.log(sunrise, temp, sunset)
     } else {
       circleFill = clear
     }
@@ -300,6 +343,7 @@ function Test() {
 
   useEffect(() => {
     sunriseRef.current = sunrise;
+    console.log("useEffect" + sunrise)
   }, [sunrise]);
 
   useEffect(() => {
