@@ -7,7 +7,7 @@ import './FontStuff.css';
 function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let kMax;
   const step = 0.03;
-  const n = 300;
+  const n = 200;
   const radius = 4;
   const inter = 0.2;
   const maxNoise = 200;
@@ -77,12 +77,9 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     poseNet.on('pose', function(results) {
         poses = results;
     });
-
-    trailColor1 = p.color(255, 255, 255); // Start color (black)
-    trailColor2 = p.color(0, 0, 0); // End color (white)
     
     p.textAlign(p.CENTER, p.TOP);
-    p.textSize(0.02 * p.width);
+    p.textSize(0.025 * p.width);
     p.textFont('BaiJamjuree');
 
     video.hide();
@@ -183,11 +180,24 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
     currcolor.setAlpha(150);
 
+    trailColor1 = p.color(255, 255, 255); // Start color (black)
+    trailColor2 = currcolor; // End color (white)
+
+    const currentDate = new Date(); // get current date and time
+    
+    const currentEDT = currentDate.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: true,
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    });
+
     drawellipses(currcolor, wposX, wposY, p.width, p.height);
     p.fill(circleFill);
     p.strokeWeight(1);
     p.stroke(currcolor);
-    p.circle(p.width*0.85, p.height*0.3, p.width*0.05);
+    p.circle(p.width*0.83, p.height*0.3, p.width*0.05);
 
     p.fill(circleFill2);
     p.strokeWeight(1);
@@ -198,10 +208,14 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     p.strokeWeight(1);
     p.stroke(currcolor);
     p.circle(p.width*0.7, p.height*0.7, p.width*0.05);
+
+    p.fill('black');
+    p.text(`${currentEDT}`,  p.width*.915, p.height*.91)
+    // p.textSize(0.03 * p.width);
   };
 
   function drawellipses(color, xpoint, ypoint, sw, sh){
-    let circle1 = p.createVector(sw*0.85, sh*0.3);
+    let circle1 = p.createVector(sw*0.83, sh*0.3);
     let distance = p.dist(xpoint, ypoint, circle1.x, circle1.y);
     let circle2 = p.createVector(sw*0.2, sh*0.4);
     let distance2 = p.dist(xpoint, ypoint, circle2.x, circle2.y);
@@ -212,13 +226,13 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
     const sunsetDate = new Date(`${currentDate.toLocaleDateString()} ${sunsetRef.current} UTC`); 
     
-    const currentEDT = currentDate.toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      hour12: true,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    });
+    // const currentEDT = currentDate.toLocaleString('en-US', {
+    //   timeZone: 'America/New_York',
+    //   hour12: true,
+    //   hour: 'numeric',
+    //   minute: 'numeric',
+    //   second: 'numeric'
+    // });
     const sunriseEDT = sunriseDate.toLocaleString('en-US', {
       timeZone: 'America/New_York',
       hour12: true,
@@ -234,16 +248,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       second: 'numeric'
     });
 
-    // WILL REMOVE LATER
-    p.fill("black");
-    p.text(
-      `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` + " | " +
-      `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` + " | " +
-      `${currentEDT ? `Current Time: ${currentEDT}` : "Current Time: loading..."} ` + " | " +
-      `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
-      p.width / 2, 10
-    );
-
     const clear = p.color(255, 0, 0, 0);
     if (distance <= sw*0.05) {
       circleFill = color;
@@ -254,7 +258,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       p.text(
         `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` + " | " +
         `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` + " | " +
-        `${currentEDT ? `Current Time: ${currentEDT}` : "Current Time: loading..."} ` + " | " +
         `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
         p.width / 2, 10
       );
