@@ -42,8 +42,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let [posX, posY] = [p.width/2, p.height/2];
   let wposX, wposY;
   let [prevPosX, prevPosY] = [p.width/2, p.height/2];
-
-  let currcolor;
   
   // Caches
   let p_sqrt = sqrt_cache(NUM_POINTS, p);
@@ -61,6 +59,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let trailColor1, trailColor2; 
 
   // Circle fill colors
+  let currcolor;
   let [circleFill1, circleFill2, circleFill3] = 'none';
 
   function setupPoseNet() {
@@ -106,8 +105,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   };
 
   function drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize) {
-       // Draw gradient trail
-       for (let i = 0; i < wristTrail.length; i++) {
+      // Draw gradient trail
+      for (let i = 0; i < wristTrail.length; i++) {
         let currentPos = wristTrail[i];
         let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
         p.fill(gradientColor);
@@ -117,20 +116,26 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   }
 
   function updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i) {
-     let pose = poses[i].pose;
-     let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
-     if (noseKeypoint && noseKeypoint.score > 0.6) {
-       [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
-     }
-     let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
-     if (wristKeypoint.score > 0.4) {
+    let pose = poses[i].pose;
+    let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
+    if (noseKeypoint && noseKeypoint.score > 0.6) {
+      [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
+    }
+     
+    let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
+    if (wristKeypoint.score > 0.4) {
        [wristPositionX, wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
        wristTrail.push(p.createVector(wristPositionX, wristPositionY));
-     }
+    }
+
      // Limit wristTrail array to maximum length
-     if (wristTrail.length > maxTrailLength) {
-       wristTrail.shift(); // Remove oldest position
-       // Draw gradient trail
+    if (wristTrail.length > maxTrailLength) {
+      wristTrail.shift(); // Remove oldest position
+      drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);
+
+      //(!!) TEST WITH WEBCAM (!!)
+
+      // Draw gradient trail
       //  for (let i = 0; i < wristTrail.length; i++) {
       //    let currentPos = wristTrail[i];
       //    let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
@@ -138,8 +143,9 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       //    p.noStroke();
       //    p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
       //  }
-      drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);
-     }
+
+      //(!!) TEST WITH WEBCAM (!!)      
+    }
   }
 
   // A function to draw ellipses over the detected keypoints
@@ -152,6 +158,23 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i);
     }
     return [positionX, positionY, wristPositionX, wristPositionY];
+  }
+
+  function drawBlob(i) {
+    p.noStroke();
+    const k = kMax * p_sqrt[p_sqrt.length - ((300-i) / 2+1)];
+    const blobSize = RADIUS + i * INTERVAL;
+    let fillColor = getFillColor(temp);
+    blob(
+      blobSize + size,
+      posX,
+      posY,
+      k,
+      p.frameCount * STEP_SIZE - i * STEP_SIZE,
+      MAX_NOISE,
+      fillColor
+    );
+    return fillColor
   }
 
   p.draw = function () {
@@ -170,23 +193,12 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     
     [prevPosX, prevPosY] = [posX, posY];
 
+    // (!! TENTATIVE CHANGE !!): moved fill color declaration outside of FOR loop
+    let fillColor;
     for (let i = NUM_POINTS; i > 0; i -= 2) {
-      p.noStroke();
-      const k = kMax * p_sqrt[p_sqrt.length - ((300-i) / 2+1)];
-      const blobSize = RADIUS + i * INTERVAL;
-      let fillColor = getFillColor(temp);
-      blob(
-        blobSize + size,
-        posX,
-        posY,
-        k,
-        p.frameCount * STEP_SIZE - i * STEP_SIZE,
-        MAX_NOISE,
-        fillColor
-      );
-
-      currcolor = fillColor
+      fillColor = drawBlob(i);
     }
+    currcolor = fillColor // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
 
     currcolor.setAlpha(150);
     trailColor1 = p.color(255, 255, 255); // Start color (black)
