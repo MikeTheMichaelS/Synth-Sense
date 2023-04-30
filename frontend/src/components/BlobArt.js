@@ -218,13 +218,12 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     for (let i = NUM_POINTS; i > 0; i -= 2) {
       fillColor = drawBlob(i);
     }
-    currcolor = fillColor // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
+    currcolor = p.color(255 - p.red(fillColor), 255 - p.green(fillColor), 255 - p.blue(fillColor)); // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
 
-    currcolor.setAlpha(150);
+    currcolor.setAlpha(100);
+    
     trailColor1 = p.color(255, 255, 255); // Start color (white)
     trailColor2 = currcolor; // End color (blobcolor)
-
-    console.log("color :" + currcolor)
 
     const currentDate = new Date(); // get current date and time
     const currentEDT = currentDate.toLocaleString('en-US', {
