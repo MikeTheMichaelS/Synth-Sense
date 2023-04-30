@@ -78,20 +78,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     kMax = p.random(0.2, 1.0);
     p.noStroke();
 
-    //(!!) TEST WITH WEBCAM (!!)
-
-    // video = p.createCapture(p.VIDEO);
-    // video.size(window.innerWidth, window.innerHeight);
-    // // Create a new poseNet method with a single detection.
-    // poseNet = ml5.poseNet(video, ml5.modelReady, {maxPose: 1 });
-    // // This sets up an event that fills the global variable "poses".
-    // // with an array every time new poses are detected.
-    // poseNet.on('pose', function(results) {
-    //     poses = results;
-    // });
     setupPoseNet();
-
-    //(!!) TEST WITH WEBCAM (!!)
     
     p.textAlign(p.CENTER, p.TOP);
     p.textSize(0.025 * p.width);
@@ -115,6 +102,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       }
   }
 
+  // USELESS FUNCTION: JACK FIX THIS!!
   function updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i) {
     let pose = poses[i].pose;
     let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
@@ -131,20 +119,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
      // Limit wristTrail array to maximum length
     if (wristTrail.length > maxTrailLength) {
       wristTrail.shift(); // Remove oldest position
-      drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);
 
-      //(!!) TEST WITH WEBCAM (!!)
-
-      // Draw gradient trail
-      //  for (let i = 0; i < wristTrail.length; i++) {
-      //    let currentPos = wristTrail[i];
-      //    let gradientColor = p.lerpColor(trailColor1, trailColor2, i / (wristTrail.length));
-      //    p.fill(gradientColor);
-      //    p.noStroke();
-      //    p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
-      //  }
-
-      //(!!) TEST WITH WEBCAM (!!)      
+      drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);    
     }
 
     return [positionX, positionY, wristPositionX, wristPositionY]
@@ -157,7 +133,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     
     // Loop through all the poses detected
     for (let i = 0; i < poses.length; i++) {
-      // [positionX, positionY, wristPositionX, wristPositionY] = updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i);
       let pose = poses[i].pose;
       let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
       if (noseKeypoint && noseKeypoint.score > 0.6) {
@@ -213,7 +188,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     
     [prevPosX, prevPosY] = [posX, posY];
 
-    // (!! TENTATIVE CHANGE !!): moved fill color declaration outside of FOR loop
     let fillColor;
     for (let i = NUM_POINTS; i > 0; i -= 2) {
       fillColor = drawBlob(i);
@@ -225,7 +199,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     trailColor1 = p.color(255, 255, 255); // Start color (white)
     trailColor2 = currcolor; // End color (blobcolor)
 
-    const currentDate = new Date(); // get current date and time
+    const currentDate = new Date(); // DUPLICATE??
     const currentEDT = currentDate.toLocaleString('en-US', {
       timeZone: 'America/New_York',
       hour12: true,
@@ -255,7 +229,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     let [distance1, distance2, distance3] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y)];
     console.log("distance1: " + distance1)
 
-    const currentDate = new Date(); 
+    const currentDate = new Date(); // DUPLICATE?
     const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
     const sunsetDate = new Date(`${currentDate.toLocaleDateString()} ${sunsetRef.current} UTC`); 
     
