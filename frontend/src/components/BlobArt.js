@@ -146,6 +146,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
       //(!!) TEST WITH WEBCAM (!!)      
     }
+
+    return [positionX, positionY, wristPositionX, wristPositionY]
   }
 
   // A function to draw ellipses over the detected keypoints
@@ -155,8 +157,26 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     
     // Loop through all the poses detected
     for (let i = 0; i < poses.length; i++) {
-      updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i);
+      // [positionX, positionY, wristPositionX, wristPositionY] = updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i);
+      let pose = poses[i].pose;
+      let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
+      if (noseKeypoint && noseKeypoint.score > 0.6) {
+        [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
+      }
+       
+      let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
+      if (wristKeypoint.score > 0.4) {
+         [wristPositionX, wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
+         wristTrail.push(p.createVector(wristPositionX, wristPositionY));
+      }
+  
+       // Limit wristTrail array to maximum length
+      if (wristTrail.length > maxTrailLength) {
+        wristTrail.shift(); // Remove oldest position
+        drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);
+      }
     }
+    console.log(positionX,positionY)
     return [positionX, positionY, wristPositionX, wristPositionY];
   }
 
@@ -201,8 +221,10 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     currcolor = fillColor // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
 
     currcolor.setAlpha(150);
-    trailColor1 = p.color(255, 255, 255); // Start color (black)
-    trailColor2 = currcolor; // End color (white)
+    trailColor1 = p.color(255, 255, 255); // Start color (white)
+    trailColor2 = currcolor; // End color (blobcolor)
+
+    console.log("color :" + currcolor)
 
     const currentDate = new Date(); // get current date and time
     const currentEDT = currentDate.toLocaleString('en-US', {
@@ -222,16 +244,17 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     p.text(`${currentEDT}`,  p.width*.915, p.height*.91)
   };
 
-  function createCircle(circleFill1, weight, currColor, x, y, size) {
+  function createCircle(circleFill1, weight, currcolor, x, y, size) {
     p.fill(circleFill1);
     p.strokeWeight(weight);
-    p.stroke(currColor);
-    p.circle(p.width*x, p.height*y, p.height*size);
+    p.stroke(currcolor);
+    p.circle(p.width*x, p.height*y, p.width*size);
   }
 
   function drawellipses(color, xpoint, ypoint, sw, sh) {
     let [circle1, circle2, circle3] = [p.createVector(sw*0.83, sh*0.3), p.createVector(sw*0.2, sh*0.4), p.createVector(sw*0.7, sh*0.7)];
     let [distance1, distance2, distance3] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y)];
+    console.log("distance1: " + distance1)
 
     const currentDate = new Date(); 
     const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
@@ -282,6 +305,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   }
 
   function handleDistance1(distance1, sw, sunriseEDT, temp, sunsetEDT, p, color, clear) {
+    // console.log("color " + color)
     if (distance1 <= sw * 0.05) {
       circleFill1 = color;
       circleFill2 = clear;
