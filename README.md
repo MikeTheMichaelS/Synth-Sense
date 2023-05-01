@@ -1,6 +1,6 @@
 # Synth Sense
 
-<img width="573" alt="Screen Shot 2023-04-05 at 6 45 19 PM" src="https://user-images.githubusercontent.com/83141712/230229589-271d29dd-96de-46e8-b633-84a424b4697c.png">
+<img width="573" alt="Screen Shot 2023-04-05 at 6 45 19 PM" src="https://github.com/MikeTheMichaelS/Synth-Sense/blob/main/logo.png">
 
 Synth Sense is a dynamic wall art project that uses real-time data on weather, noise, and motion to create an interactive and visually striking display. The art reacts to the movements and interactions of people in the space, changing in color and pattern based on their presence and activity. Additionally, Synth Sense incorporates informational text such as the company's logo and real-time weather and time updates to provide useful information to viewers. The art is designed to be displayed in meeting rooms or lobbies of companies, creating an engaging and memorable visual experience for visitors and employees alike.
 
