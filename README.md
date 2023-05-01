@@ -33,18 +33,16 @@ These instructions will get you a copy of the project up and running on your loc
 git clone https://github.com/MikeTheMichaelS/Synth-Sense.git
 ```
 * Install dependencies/packages
-    * Make sure to have python and Node installed
     * from the terminal cd into the same directory where you cloned your repo
 ```
-pip install uvicorn
-pip install fastapi
 cd frontend && npm install
 ```
-* Start the backend process
+<!-- * Start the backend process
    * In a new terminal
    ```
    cd backend && uvicorn main:app --reload
    ```
+-->
 * Start the frontend process
    * In the frontend directory:
    * Make sure to run the backend process before running the frontend
