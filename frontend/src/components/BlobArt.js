@@ -4,23 +4,24 @@ import p5 from 'p5';
 import * as ml5 from "ml5";
 import './FontStuff.css';
 
-function sqrt_cache(NUM_POINTS, p) {
-  let p_sqrt = [];
+
+function sqrt_cache (NUM_POINTS, p) {
+  let cache = [];
   for (let i = NUM_POINTS; i > 0; i -= 2) {
-    p_sqrt.push(p.sqrt(i / NUM_POINTS));
+    cache.push(p.sqrt(i / NUM_POINTS));
   }
-  return p_sqrt;
+  return cache;
 }
 
-function trig_cache(p) {
-  let p_cos = [];
-  let p_sin = [];
+function trig_cache (p) {
+  let cos_cache = [];
+  let sin_cache = [];
   for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
     const radians = p.radians(theta);
-    p_cos.push(p.cos(radians));
-    p_sin.push(p.sin(radians));
+    cos_cache.push(p.cos(radians)); 
+    sin_cache.push(p.sin(radians));
   }
-  return [p_cos, p_sin]
+  return [cos_cache, sin_cache]
 }
 
 function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
@@ -48,8 +49,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let [p_cos, p_sin] = trig_cache(p);
 
   // Colors
-  let yellow = p.color(255, 168, 61, 12); //yellow
-  let red = p.color(255, 71, 61, 12); //red
+  let orange = p.color(255, 142, 61, 12); //orange
+  let yellow = p.color(255, 197, 61, 12); //yellow
   let blue = p.color(66, 195, 255, 12); //blue
 
   // Ellipse trail-related variables
@@ -349,7 +350,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       displayTimeout1 = setTimeout(() => {
         textVisible1 = false;
         circleFill1 = clear;
-      }, 5000);
+      }, 4000);
     }
   }
 
@@ -369,7 +370,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       displayTimeout2 = setTimeout(() => {
         textVisible2 = false;
         circleFill2 = clear;
-      }, 5000);
+      }, 4000);
     }
   }
 
@@ -391,32 +392,33 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       displayTimeout3 = setTimeout(() => {
         textVisible3 = false;
         circleFill3 = clear;
-      }, 5000);
+      }, 4000);
     }
   }
 
-  function lerpBlobColor(from, to, endtemp, starttemp) {
-    let tempRange = endtemp - starttemp
-    let tempRatio = (temp - starttemp) / (tempRange)
-    return (p.lerpColor(from, to, tempRatio))
+  function lerpBlobColor(from, to, endtemp, starttemp, temp) {
+    let tempRange = endtemp-starttemp
+    let tempRatio = (temp - starttemp)/(tempRange)
+    return (p.lerpColor(from,to,tempRatio))
   }
 
   function getFillColor(temp) {
+    // temp = 10;
     let fillColor;
     if (temp >= 100) {
-      fillColor = red
-    }
-    else if (temp < 100 && temp >= 50) {
-      fillColor = lerpBlobColor(yellow, red, 100, 50);
-    }
-    else if (temp < 50 && temp >= 0) {
-      fillColor = lerpBlobColor(blue, yellow, 50, 0);
-    }
+      fillColor = orange;
+    } 
+    else if (temp < 100 && temp >= 70) {
+      fillColor = lerpBlobColor(yellow, orange, 100, 70, temp);
+    } 
+    else if (temp < 70 && temp >= 0) { 
+      fillColor = lerpBlobColor(blue, yellow, 70, 0, temp);
+    } 
     else {
       fillColor = blue
     }
     return fillColor
-  }
+  } 
 } //end sketch
 
 function Test() {
