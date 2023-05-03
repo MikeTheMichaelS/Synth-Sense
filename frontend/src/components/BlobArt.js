@@ -34,7 +34,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   const MAX_NOISE = 200;
 
   let size = 0;
-  let [temp, sunrise, sunset] = [weatherRef.current, sunriseRef.current, sunsetRef.current];
+  let temp = weatherRef.current;
 
   // PoseNet variables
   let video;
@@ -102,31 +102,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
     }
   }
-
-  // USELESS FUNCTION: JACK FIX THIS!!
-  function updateKeypoints(positionX, positionY, wristPositionX, wristPositionY, i) {
-    let pose = poses[i].pose;
-    let noseKeypoint = pose.keypoints.find((keypoint) => keypoint.part === 'nose');
-    if (noseKeypoint && noseKeypoint.score > 0.6) {
-      [positionX, positionY] = [p.width - noseKeypoint.position.x, noseKeypoint.position.y];
-    }
-
-    let wristKeypoint = pose.keypoints[10]; // index 10 represents the wrist keypoint
-    if (wristKeypoint.score > 0.4) {
-      [wristPositionX, wristPositionY] = [p.width - wristKeypoint.position.x, wristKeypoint.position.y];
-      wristTrail.push(p.createVector(wristPositionX, wristPositionY));
-    }
-
-    // Limit wristTrail array to maximum length
-    if (wristTrail.length > maxTrailLength) {
-      wristTrail.shift(); // Remove oldest position
-
-      drawGradientTrail(wristTrail, trailColor1, trailColor2, ellipseSize);
-    }
-
-    return [positionX, positionY, wristPositionX, wristPositionY]
-  }
-
+  
   // A function to draw ellipses over the detected keypoints
   p.drawKeypoints = function () {
     let [positionX, positionY] = [p.width / 2, p.height / 2]
@@ -191,7 +167,11 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
     let fillColor;
     for (let i = NUM_POINTS; i > 0; i -= 2) {
-      fillColor = drawBlob(i);
+      if (fillColor) {
+        drawBlob(i)
+      } else {
+        fillColor = drawBlob(i);
+      } 
     }
     currcolor = p.color(255 - p.red(fillColor), 255 - p.green(fillColor), 255 - p.blue(fillColor)); // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
 
@@ -238,11 +218,11 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
     if (textVisible1) {
       p.text(
-        `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."} ` +
-        " | " +
-        `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."} ` +
-        " | " +
-        `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."} `,
+        `${sunriseEDT ? `Sunrise: ${sunriseEDT}` : "Sunrise: loading..."}` +
+        " • " +
+        `${temp ? `Current temperature: ${temp}°F` : "Current temperature: loading..."}` +
+        " • " +
+        `${sunsetEDT ? `Sunset: ${sunsetEDT}` : "Sunset: loading..."}`,
         p.width / 2,
         10
       );
@@ -250,7 +230,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
     if (textVisible2) {
       p.text(
-        "Jack Campbell | Selena Zheng | Mustafa Taibah | Michael Sun",
+        "Jack Campbell • Selena Zheng • Mustafa Taibah • Michael Sun",
         p.width / 2,
         10
       );
@@ -281,30 +261,10 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     let [distance1, distance2, distance3] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y)];
     console.log("distance1: " + distance1)
 
-    const currentDate = new Date(); // DUPLICATE?
-    const sunriseDate = new Date(`${currentDate.toLocaleDateString()} ${sunriseRef.current} UTC`); // combine current date with sunrise time in UTC
-    const sunsetDate = new Date(`${currentDate.toLocaleDateString()} ${sunsetRef.current} UTC`);
-
-    const sunriseEDT = sunriseDate.toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      hour12: true,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    });
-
-    const sunsetEDT = sunsetDate.toLocaleString('en-US', {
-      timeZone: 'America/New_York',
-      hour12: true,
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    });
-
     const clear = p.color(255, 0, 0, 0);
-    handleDistance1(distance1, sw, sunriseEDT, temp, sunsetEDT, p, color, clear);
-    handleDistance2(distance2, sw, p, color, clear);
-    handleDistance3(distance3, sw, decibelRef, p, color, clear);
+    handleDistance1(distance1, sw, color, clear);
+    handleDistance2(distance2, sw, color, clear);
+    handleDistance3(distance3, sw, color, clear);
   }
 
   function blob(size, xCenter, yCenter, k, t, noisiness, color) {
@@ -333,7 +293,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let displayTimeout2 = null;
   let displayTimeout3 = null;
 
-  function handleDistance1(distance1, sw, sunriseEDT, temp, sunsetEDT, p, color, clear) {
+  function handleDistance1(distance1, sw, color, clear) {
     // console.log("color " + color)
     if (distance1 <= sw * 0.05 && !textVisible1) {
       textVisible1 = true;
@@ -354,7 +314,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     }
   }
 
-  function handleDistance2(distance2, sw, p, color, clear) {
+  function handleDistance2(distance2, sw, color, clear) {
     if (distance2 <= sw * 0.05 && !textVisible2) {
       textVisible2 = true;
       circleFill2 = color;
@@ -376,7 +336,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
 
 
-  function handleDistance3(distance3, sw, decibelRef, p, color, clear) {
+  function handleDistance3(distance3, sw, color, clear) {
     if (distance3 <= sw * 0.05 && !textVisible3) {
       textVisible3 = true;
       circleFill2 = clear;
