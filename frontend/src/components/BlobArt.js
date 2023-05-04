@@ -67,6 +67,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   // Circle fill colors
   let currcolor;
   let [circleFill1, circleFill2, circleFill3, circleFill4] = 'none';
+  const clear = p.color(255, 0, 0, 0);
 
   // Function to set up PoseNet for pose detection
   function setupPoseNet() {
@@ -262,7 +263,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
     if (textVisible4) {
       p.text(
-        "PlaceHolder",
+        "Synth-Sense is an interactive art project that responds \nto real—time data, such as weather, noise, and motion, \n creating a mesmerizing visual display. The project adapts to its environment\n and incorporates informative text like current weather and time. \nSynth-Sense offers an ambient and captivating experience to \nenhance meeting rooms, work spaces, or even personal spaces.",
         p.width / 2,
         10
       );
@@ -287,7 +288,6 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     let [distance1, distance2, distance3, distance4] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y), p.dist(xpoint, ypoint, circle4.x, circle4.y)];
     console.log("distance1: " + distance1)
 
-    const clear = p.color(255, 0, 0, 0);
     handleDistance1(distance1, sw, color, clear);
     handleDistance2(distance2, sw, color, clear);
     handleDistance3(distance3, sw, color, clear);
@@ -320,6 +320,11 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let displayTimeout2 = null;
   let displayTimeout3 = null;
   let displayTimeout4 = null;
+
+  circleFill1 = clear;
+  circleFill2 = clear;
+  circleFill3 = clear;
+  circleFill4 = clear;
 
   // Functions to check if wrist is hovering over circle and then update text visibility
   function handleDistance1(distance1, sw, color, clear) {
@@ -408,7 +413,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       displayTimeout4 = setTimeout(() => {
         textVisible4 = false;
         circleFill4 = clear;
-      }, 4000);
+      }, 6000);
     }
   }
 
