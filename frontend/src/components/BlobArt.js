@@ -66,7 +66,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
 
   // Circle fill colors
   let currcolor;
-  let [circleFill1, circleFill2, circleFill3] = 'none';
+  let [circleFill1, circleFill2, circleFill3, circleFill4] = 'none';
 
   // Function to set up PoseNet for pose detection
   function setupPoseNet() {
@@ -208,6 +208,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     createCircle(circleFill1, 1, currcolor, 0.83, 0.3, 0.05)
     createCircle(circleFill2, 1, currcolor, 0.2, 0.4, 0.05)
     createCircle(circleFill3, 1, currcolor, 0.7, 0.7, 0.05)
+    createCircle(circleFill4, 1, currcolor, 0.87, 0.65, 0.05)
 
     p.fill('black');
     p.text(`${currentEDT}`, p.width * .915, p.height * .91)
@@ -258,6 +259,14 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
         10
       );
     };
+
+    if (textVisible4) {
+      p.text(
+        "PlaceHolder",
+        p.width / 2,
+        10
+      );
+    };
   };
 
   // CreateCircle function creates circles on the canvas
@@ -271,16 +280,18 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let textVisible1 = false;
   let textVisible2 = false;
   let textVisible3 = false;
+  let textVisible4 = false;
 
   function drawellipses(color, xpoint, ypoint, sw, sh) {
-    let [circle1, circle2, circle3] = [p.createVector(sw * 0.83, sh * 0.3), p.createVector(sw * 0.2, sh * 0.4), p.createVector(sw * 0.7, sh * 0.7)];
-    let [distance1, distance2, distance3] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y)];
+    let [circle1, circle2, circle3, circle4] = [p.createVector(sw * 0.83, sh * 0.3), p.createVector(sw * 0.2, sh * 0.4), p.createVector(sw * 0.7, sh * 0.7), p.createVector(sw * 0.87, sh * 0.65)];
+    let [distance1, distance2, distance3, distance4] = [p.dist(xpoint, ypoint, circle1.x, circle1.y), p.dist(xpoint, ypoint, circle2.x, circle2.y), p.dist(xpoint, ypoint, circle3.x, circle3.y), p.dist(xpoint, ypoint, circle4.x, circle4.y)];
     console.log("distance1: " + distance1)
 
     const clear = p.color(255, 0, 0, 0);
     handleDistance1(distance1, sw, color, clear);
     handleDistance2(distance2, sw, color, clear);
     handleDistance3(distance3, sw, color, clear);
+    handleDistance4(distance4, sw, color, clear);
   }
 
   function blob(size, xCenter, yCenter, k, t, noisiness, color) {
@@ -308,6 +319,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let displayTimeout1 = null;
   let displayTimeout2 = null;
   let displayTimeout3 = null;
+  let displayTimeout4 = null;
 
   // Functions to check if wrist is hovering over circle and then update text visibility
   function handleDistance1(distance1, sw, color, clear) {
@@ -316,8 +328,10 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       circleFill1 = color;
       circleFill2 = clear;
       circleFill3 = clear;
+      circleFill4 = clear;
       textVisible2 = false;
       textVisible3 = false;
+      textVisible4 = false;
 
       if (displayTimeout1) {
         clearTimeout(displayTimeout1);
@@ -333,11 +347,13 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   function handleDistance2(distance2, sw, color, clear) {
     if (distance2 <= sw * 0.05 && !textVisible2) {
       textVisible2 = true;
-      circleFill2 = color;
       circleFill1 = clear;
+      circleFill2 = color;
       circleFill3 = clear;
+      circleFill4 = clear;
       textVisible1 = false;
       textVisible3 = false;
+      textVisible4 = false;
 
       if (displayTimeout2) {
         clearTimeout(displayTimeout2);
@@ -355,11 +371,13 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   function handleDistance3(distance3, sw, color, clear) {
     if (distance3 <= sw * 0.05 && !textVisible3) {
       textVisible3 = true;
+      circleFill1 = clear;
       circleFill2 = clear;
       circleFill3 = color;
-      circleFill1 = clear;
+      circleFill4 = clear;
       textVisible1 = false;
       textVisible2 = false;
+      textVisible4 = false;
 
       if (displayTimeout3) {
         clearTimeout(displayTimeout3);
@@ -368,6 +386,28 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       displayTimeout3 = setTimeout(() => {
         textVisible3 = false;
         circleFill3 = clear;
+      }, 4000);
+    }
+  }
+
+  function handleDistance4(distance4, sw, color, clear) {
+    if (distance4 <= sw * 0.05 && !textVisible4) {
+      textVisible4 = true;
+      circleFill1 = clear;
+      circleFill2 = clear;
+      circleFill3 = clear;
+      circleFill4 = color;
+      textVisible1 = false;
+      textVisible2 = false;
+      textVisible3 = false;
+
+      if (displayTimeout4) {
+        clearTimeout(displayTimeout4);
+      }
+
+      displayTimeout4 = setTimeout(() => {
+        textVisible4 = false;
+        circleFill4 = clear;
       }, 4000);
     }
   }
