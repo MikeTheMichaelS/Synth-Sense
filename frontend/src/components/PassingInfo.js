@@ -1,7 +1,9 @@
-import React, { useState, useEffect, createContext } from 'react';
+// Import required packages and components
+import React, { useState, useEffect, createContext, useRef, useCallback } from 'react';
 import BlobArt from './BlobArt';
 import axios from 'axios';
 
+// Create context
 export const MyContext = createContext();
 
 function PassingInfo() {
@@ -12,17 +14,18 @@ function PassingInfo() {
   const [sunrise, setSunrise] = useState("");
   const [sunset, setSunset] = useState("");
 
-  // Config area
-  let cacheTTL = 1800000
+  // Cache configuration
+  let cacheTTL = 1800000 // Cache Time To Live set to 30 minutes
 
   // Cache variable area
-  var today = new Date();
-  const time = today.getHours() ;
-  let tempUpdateTime;
-  let sunUpdateTime;
-  let tempData, sunriseData, sunsetData;
-
-  //CURRENT LOCATION: START
+  const today = new Date();
+  const time = today.getHours();
+  const tempUpdateTime = useRef(null);
+  const sunUpdateTime = useRef(null);
+  const tempData = useRef(null);
+  const sunriseData = useRef(null);
+  const sunsetData = useRef(null);
+  //CURRENT LOCATION: START using Geolocation API
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -39,38 +42,39 @@ function PassingInfo() {
   //CURRENT LOCATION: END
 
 
-  //TEMPERATURE: START
-  const getWeather = async () => {
+  //TEMPERATURE: START using Open Meteo API
+  const getWeather = useCallback(async () => {
     await axios.get
       (
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&temperature_unit=fahrenheit&forecast_days=1&timezone=EST`
       )
       .then((response) => {
         const currentweather = response.data.hourly.temperature_2m
-        tempData = response.data.hourly.temperature_2m
-        tempUpdateTime = Date.now();
+        tempData.current = response.data.hourly.temperature_2m
+        tempUpdateTime.current = Date.now();
         setWeatherData(currentweather[time])
       })
       .catch(error => console.log(error))
-  };
+  }, [latitude, longitude, time]);
 
+  // Update weather data if cache has expired
   useEffect(() => {
-    if (tempUpdateTime == null || Date.now() - sunUpdateTime > cacheTTL) {
+    if (tempUpdateTime.current == null || Date.now() - sunUpdateTime.current > cacheTTL) {
       if (latitude && longitude) {
         getWeather();
       }
     } else {
-      const getWeather = ()=>{
-        setWeatherData(tempData[time]);
+      const getWeather = () => {
+        setWeatherData(tempData.current[time]);
       };
       getWeather();
     }
-  }, [latitude, longitude, time]);
+  }, [latitude, longitude, time, cacheTTL, getWeather, tempData, tempUpdateTime, sunUpdateTime]);
   //TEMPERATURE: END
 
 
-  //SUNRISE SUNSET: START
-  const getDayLight = async () => {
+  //SUNRISE SUNSET: START using Sunrise Sunset API
+  const getDayLight = useCallback(async () => {
     await axios.get
       (
         `https://api.sunrise-sunset.org/json?date=today&lat=${latitude}&lng=${longitude}`
@@ -78,39 +82,41 @@ function PassingInfo() {
       .then((response) => {
         const sunrise_time_utc = response.data.results.sunrise;
         const sunset_time_utc = response.data.results.sunset;
-        sunriseData = response.data.results.sunrise;
-        sunsetData = response.data.results.sunset;
-        sunUpdateTime = Date.now()
+        sunriseData.current = response.data.results.sunrise;
+        sunsetData.current = response.data.results.sunset;
+        sunUpdateTime.current = Date.now()
         setSunrise(sunrise_time_utc)
         setSunset(sunset_time_utc)
       })
       .catch(error => console.log(error))
-  };
+  }, [latitude, longitude]);
 
+  // Update sunrise and sunset data if cache has expired
   useEffect(() => {
-    if (sunUpdateTime == null || Date.now() - sunUpdateTime > cacheTTL) {
+    if (sunUpdateTime.current == null || Date.now() - sunUpdateTime.current > cacheTTL) {
       if (latitude && longitude) {
         getDayLight();
       }
     } else {
       const getDayLight = () => {
-        setSunrise(sunriseData);
-        setSunset(sunsetData);
+        setSunrise(sunriseData.current);
+        setSunset(sunsetData.current);
       }
       getDayLight();
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, time, cacheTTL, getWeather, tempData, tempUpdateTime, sunUpdateTime, getDayLight, sunriseData, sunsetData]);
   //SUNRISE SUNSET: END
 
 
-  //AUDIO: START
+  //AUDIO: START using Web Audio API
   const [decibel, setDecibel] = useState(0);
 
   useEffect(() => {
-
+    // Flag to determine if component is mounted
     let mounted = true;
     const constraints = { audio: true };
 
+    // Request access to the user's microphone
     navigator.mediaDevices.getUserMedia(constraints)
       .then(stream => {
         const audioContext = new AudioContext();
@@ -134,8 +140,10 @@ function PassingInfo() {
           }
         };
 
+        // Update decibel level every 300ms
         const intervalId = setInterval(updateDecibel, 300);
 
+        // Clean up function for when the component is unmounted
         return () => {
           mounted = false;
           clearInterval(intervalId);
@@ -149,9 +157,10 @@ function PassingInfo() {
   }, []);
   //AUDIO: END
 
+  // Return the provider with all the data as context values
   return (
     <MyContext.Provider value={{ weatherData, sunrise, sunset, decibel, latitude, longitude }}>
-      <div>      
+      <div>
         <BlobArt />
       </div>
     </MyContext.Provider >
@@ -159,5 +168,6 @@ function PassingInfo() {
 
 }
 
+// Export the PassingInfo component
 export default PassingInfo;
 

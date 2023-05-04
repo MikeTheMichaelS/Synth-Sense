@@ -1,10 +1,11 @@
+// Import necessary libraries and components
 import { useEffect, useRef, useContext } from 'react';
 import { MyContext } from './PassingInfo';
 import p5 from 'p5';
 import * as ml5 from "ml5";
 import './Font.css';
 
-
+// A helper function to create a cache of sqrt values for a given number of points
 function sqrt_cache(NUM_POINTS, p) {
   let cache = [];
   for (let i = NUM_POINTS; i > 0; i -= 2) {
@@ -13,6 +14,7 @@ function sqrt_cache(NUM_POINTS, p) {
   return cache;
 }
 
+// A helper function to create trig caches for cos and sin values
 function trig_cache(p) {
   let cos_cache = [];
   let sin_cache = [];
@@ -24,8 +26,10 @@ function trig_cache(p) {
   return [cos_cache, sin_cache]
 }
 
+// Main Sketch function that takes the p5 instance (p) and references to weather, decibel, sunrise, and sunset values
 function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   // P5 variables
+  // Declare constants and variables related to the blob generation
   let kMax;
   const STEP_SIZE = 0.03;
   const NUM_POINTS = 200;
@@ -33,10 +37,11 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   const INTERVAL = 0.2;
   const MAX_NOISE = 200;
 
+  // Variables to hold the size and temperature values
   let size = 0;
   let temp = weatherRef.current;
 
-  // PoseNet variables
+  // PoseNet variables for video capture, poseNet model, and pose tracking
   let video;
   let poseNet;
   let poses = [];
@@ -44,11 +49,11 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let wposX, wposY;
   let [prevPosX, prevPosY] = [p.width / 2, p.height / 2];
 
-  // Caches
+  // Caches for sqrt and trig values
   let p_sqrt = sqrt_cache(NUM_POINTS, p);
   let [p_cos, p_sin] = trig_cache(p);
 
-  // Colors
+  // Colors for the blobs
   let orange = p.color(255, 142, 61, 12); //orange
   let yellow = p.color(255, 197, 61, 12); //yellow
   let blue = p.color(66, 195, 255, 12); //blue
@@ -63,6 +68,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let currcolor;
   let [circleFill1, circleFill2, circleFill3] = 'none';
 
+  // Function to set up PoseNet for pose detection
   function setupPoseNet() {
     video = p.createCapture(p.VIDEO);
     video.size(window.innerWidth, window.innerHeight);
@@ -72,22 +78,30 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     });
   }
 
+  // P5 setup function
   p.setup = function () {
-    p.createCanvas(window.innerWidth, window.innerHeight);
+    let width = p.windowWidth;
+    let height = p.windowHeight;
+
+    // Create canvas and set properties
+    p.createCanvas(width, height);
     p.angleMode(p.DEGREES);
     p.noFill();
     kMax = p.random(0.2, 1.0);
     p.noStroke();
 
+    // Set up PoseNet for detecting body keypoints (we are detecting the wrist and nose)
     setupPoseNet();
 
     p.textAlign(p.CENTER, p.TOP);
     p.textSize(0.025 * p.width);
     p.textFont('BaiJamjuree');
 
+    // Hide the video feed
     video.hide();
   };
 
+  // Model ready function to update the status when the model is loaded
   p.modelReady = function () {
     p.select('#status').html('Model Loaded');
   };
@@ -149,6 +163,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     return fillColor
   }
 
+  // Main draw function
   p.draw = function () {
     p.background(360);
 
@@ -245,6 +260,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     };
   };
 
+  // CreateCircle function creates circles on the canvas
   function createCircle(circleFill1, weight, currcolor, x, y, size) {
     p.fill(circleFill1);
     p.strokeWeight(weight);
@@ -293,8 +309,8 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   let displayTimeout2 = null;
   let displayTimeout3 = null;
 
+  // Functions to check if wrist is hovering over circle and then update text visibility
   function handleDistance1(distance1, sw, color, clear) {
-    // console.log("color " + color)
     if (distance1 <= sw * 0.05 && !textVisible1) {
       textVisible1 = true;
       circleFill1 = color;
@@ -356,12 +372,16 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     }
   }
 
+  // The lerpBlobColor function takes two colors (from, to), two temperature values (starttemp, endtemp), and the current temperature (temp) as input.
+  // It linearly interpolates between the two colors based on the position of the current temperature between starttemp and endtemp.
   function lerpBlobColor(from, to, endtemp, starttemp, temp) {
     let tempRange = endtemp - starttemp
     let tempRatio = (temp - starttemp) / (tempRange)
     return (p.lerpColor(from, to, tempRatio))
   }
 
+  // The getFillColor function takes the current temperature and returns the appropriate color for the blobs based on the temperature.
+  // It uses the lerpBlobColor function to interpolate between colors for smoother transitions.
   function getFillColor(temp) {
     // temp = 10;
     let fillColor;
@@ -381,6 +401,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   }
 } //end sketch
 
+// Test component that initializes and uses the p5 sketch
 function Test() {
   const p5ContainerRef = useRef();
   const { weatherData, decibel, sunrise, sunset } = useContext(MyContext);
