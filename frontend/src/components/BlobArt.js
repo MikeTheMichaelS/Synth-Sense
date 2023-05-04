@@ -2,10 +2,10 @@ import { useEffect, useRef, useContext } from 'react';
 import { MyContext } from './PassingInfo';
 import p5 from 'p5';
 import * as ml5 from "ml5";
-import './FontStuff.css';
+import './Font.css';
 
 
-function sqrt_cache (NUM_POINTS, p) {
+function sqrt_cache(NUM_POINTS, p) {
   let cache = [];
   for (let i = NUM_POINTS; i > 0; i -= 2) {
     cache.push(p.sqrt(i / NUM_POINTS));
@@ -13,12 +13,12 @@ function sqrt_cache (NUM_POINTS, p) {
   return cache;
 }
 
-function trig_cache (p) {
+function trig_cache(p) {
   let cos_cache = [];
   let sin_cache = [];
   for (let theta = 0; theta <= 360 + 2 * 36; theta += 36) {
     const radians = p.radians(theta);
-    cos_cache.push(p.cos(radians)); 
+    cos_cache.push(p.cos(radians));
     sin_cache.push(p.sin(radians));
   }
   return [cos_cache, sin_cache]
@@ -102,7 +102,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
       p.ellipse(currentPos.x, currentPos.y, ellipseSize, ellipseSize);
     }
   }
-  
+
   // A function to draw ellipses over the detected keypoints
   p.drawKeypoints = function () {
     let [positionX, positionY] = [p.width / 2, p.height / 2]
@@ -171,7 +171,7 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
         drawBlob(i)
       } else {
         fillColor = drawBlob(i);
-      } 
+      }
     }
     currcolor = p.color(255 - p.red(fillColor), 255 - p.green(fillColor), 255 - p.blue(fillColor)); // (!! TENTATIVE CHANGE !!): moved currcolor assignment outside of FOR loop
 
@@ -357,9 +357,9 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
   }
 
   function lerpBlobColor(from, to, endtemp, starttemp, temp) {
-    let tempRange = endtemp-starttemp
-    let tempRatio = (temp - starttemp)/(tempRange)
-    return (p.lerpColor(from,to,tempRatio))
+    let tempRange = endtemp - starttemp
+    let tempRatio = (temp - starttemp) / (tempRange)
+    return (p.lerpColor(from, to, tempRatio))
   }
 
   function getFillColor(temp) {
@@ -367,18 +367,18 @@ function Sketch(p, weatherRef, decibelRef, sunriseRef, sunsetRef) {
     let fillColor;
     if (temp >= 100) {
       fillColor = orange;
-    } 
+    }
     else if (temp < 100 && temp >= 70) {
       fillColor = lerpBlobColor(yellow, orange, 100, 70, temp);
-    } 
-    else if (temp < 70 && temp >= 0) { 
+    }
+    else if (temp < 70 && temp >= 0) {
       fillColor = lerpBlobColor(blue, yellow, 70, 0, temp);
-    } 
+    }
     else {
       fillColor = blue
     }
     return fillColor
-  } 
+  }
 } //end sketch
 
 function Test() {
